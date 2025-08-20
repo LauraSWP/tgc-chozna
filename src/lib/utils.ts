@@ -15,10 +15,7 @@ export function formatNumber(num: number): string {
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('es-ES', {
-    style: 'currency',
-    currency: 'EUR',
-  }).format(amount / 100)
+  return `${amount} moneditas`;
 }
 
 export function formatCardName(name: string): string {
@@ -104,4 +101,31 @@ export function debounce<T extends (...args: any[]) => any>(
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text
   return text.slice(0, maxLength) + '...'
+}
+
+// TCG specific utilities
+export function getRarityColor(rarity: string): string {
+  const rarityColors: Record<string, string> = {
+    common: '#9ca3af',
+    uncommon: '#10b981',
+    rare: '#3b82f6',
+    mythic: '#f59e0b',
+    land: '#8b5cf6',
+    token: '#6b7280'
+  };
+  return rarityColors[rarity.toLowerCase()] || '#9ca3af';
+}
+
+export function formatManaCost(manaCost: string): string {
+  if (!manaCost) return '';
+  
+  // Convert {1}{R}{G} format to readable format
+  return manaCost
+    .replace(/\{([^}]+)\}/g, '$1')
+    .replace(/([A-Z])/g, ' $1')
+    .trim();
+}
+
+export function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

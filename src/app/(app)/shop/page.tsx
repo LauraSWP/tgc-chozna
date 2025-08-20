@@ -9,11 +9,10 @@ import { formatCurrency } from '@/lib/utils';
 
 interface UserCurrency {
   coins: number;
-  gems: number;
 }
 
 export default function ShopPage() {
-  const [userCurrency, setUserCurrency] = useState<UserCurrency>({ coins: 0, gems: 0 });
+  const [userCurrency, setUserCurrency] = useState<UserCurrency>({ coins: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -90,15 +89,14 @@ export default function ShopPage() {
     <div className="space-y-6">
       {/* Shop Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          🛒 Card Shop
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+          🛒 Tienda de Sobres
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Open booster packs to expand your collection
+          Abre sobres y consigue cartas chulas
         </p>
-        <div className="flex justify-center space-x-4 text-lg">
-          <span>{formatCurrency(userCurrency.coins, 'coins')}</span>
-          <span>{formatCurrency(userCurrency.gems, 'gems')}</span>
+        <div className="flex justify-center text-lg">
+          <span className="font-semibold text-yellow-600">💰 {formatCurrency(userCurrency.coins)}</span>
         </div>
       </div>
 
@@ -106,33 +104,33 @@ export default function ShopPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Base Set Booster */}
         <Card className="relative overflow-hidden">
-          <div className="absolute top-0 right-0 bg-blue-500 text-white px-2 py-1 text-xs font-bold">
-            FEATURED
+          <div className="absolute top-0 right-0 bg-yellow-500 text-white px-2 py-1 text-xs font-bold">
+            RECOMENDADO
           </div>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              📦 Base Set Booster
+              📦 Sobre Base
             </CardTitle>
             <CardDescription>
-              15 cards including at least 1 rare or mythic rare
+              15 cartas incluyendo al menos 1 rara o mítica
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Contains:</h4>
+              <div className="bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900 dark:to-orange-900 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Contiene:</h4>
                 <ul className="text-sm space-y-1">
-                  <li>• 10 Common cards</li>
-                  <li>• 3 Uncommon cards</li>
-                  <li>• 1 Rare or Mythic Rare</li>
-                  <li>• 1 Basic Land</li>
-                  <li>• 1% chance for foil upgrade</li>
+                  <li>• 10 Cartas comunes</li>
+                  <li>• 3 Cartas infrecuentes</li>
+                  <li>• 1 Carta rara o mítica</li>
+                  <li>• 1 Tierra básica</li>
+                  <li>• 1% de chance foil</li>
                 </ul>
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold mb-2">{formatCurrency(150, 'coins')}</p>
-                <p className="text-sm text-gray-600">per pack</p>
+                <p className="text-2xl font-bold mb-2">{formatCurrency(150)}</p>
+                <p className="text-sm text-gray-600">por sobre</p>
               </div>
             </div>
           </CardContent>
@@ -142,28 +140,28 @@ export default function ShopPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              📦📦📦 Bundle Deal
+              📦📦📦 Packs
             </CardTitle>
             <CardDescription>
-              Get more value with bulk purchases
+              Más sobres, más diversión
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                  <span>3 Packs</span>
-                  <span className="font-mono">{formatCurrency(400, 'coins')}</span>
+                  <span>3 Sobres</span>
+                  <span className="font-mono">{formatCurrency(400)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-800 rounded">
-                  <span>6 Packs</span>
-                  <span className="font-mono">{formatCurrency(750, 'coins')}</span>
+                  <span>6 Sobres</span>
+                  <span className="font-mono">{formatCurrency(750)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200">
-                  <span>12 Packs</span>
+                  <span>12 Sobres</span>
                   <div className="text-right">
-                    <div className="font-mono">{formatCurrency(1400, 'coins')}</div>
-                    <div className="text-xs text-yellow-600">Save 200 coins!</div>
+                    <div className="font-mono">{formatCurrency(1400)}</div>
+                    <div className="text-xs text-yellow-600">¡Ahorras 200 moneditas!</div>
                   </div>
                 </div>
               </div>
@@ -171,25 +169,25 @@ export default function ShopPage() {
           </CardContent>
         </Card>
 
-        {/* Premium Currency */}
+        {/* Resumen Simple */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              💎 Premium Currency
+              🎮 ¡Simple y Directo!
             </CardTitle>
             <CardDescription>
-              Get gems for exclusive content
+              Solo moneditas, solo diversión
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="text-center py-8">
-                <p className="text-4xl mb-2">💎</p>
+                <p className="text-4xl mb-2">🪙</p>
                 <p className="text-gray-600 mb-4">
-                  Premium features coming soon!
+                  Todo se compra con moneditas. Nada de complicaciones.
                 </p>
                 <Button disabled>
-                  Coming Soon
+                  ¡Así de Simple!
                 </Button>
               </div>
             </div>
@@ -200,9 +198,9 @@ export default function ShopPage() {
       {/* Pack Opening Interface */}
       <Card>
         <CardHeader>
-          <CardTitle>Open Booster Packs</CardTitle>
+          <CardTitle>Abrir Sobres</CardTitle>
           <CardDescription>
-            Choose your packs and reveal your cards
+            Elige tus sobres y descubre tus cartas
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -217,30 +215,15 @@ export default function ShopPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>💡 Pack Opening Tips</CardTitle>
+            <CardTitle>🪙 Consigue Moneditas</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm">
-              <li>• Each pack guarantees at least one rare or mythic rare card</li>
-              <li>• Foil cards can replace any common card (1% chance)</li>
-              <li>• Mythic rares appear in roughly 1 in 8 rare slots</li>
-              <li>• All cards are immediately added to your collection</li>
-              <li>• Duplicate cards can be used in different decks</li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>🪙 Earning Coins</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-sm">
-              <li>• Daily login bonus: +100 coins</li>
-              <li>• Completing matches: +50 coins</li>
-              <li>• Winning matches: +100 coins</li>
-              <li>• First win of the day: +200 coins</li>
-              <li>• Weekly quests: up to +500 coins</li>
+              <li>• Entrar cada día: +100 moneditas</li>
+              <li>• Jugar partidas: +50 moneditas</li>
+              <li>• Ganar partidas: +100 moneditas</li>
+              <li>• Primera victoria del día: +200 moneditas</li>
+              <li>• Misiones: hasta +500 moneditas</li>
             </ul>
           </CardContent>
         </Card>
@@ -250,8 +233,7 @@ export default function ShopPage() {
       <Card>
         <CardContent className="pt-6">
           <p className="text-xs text-gray-500 text-center">
-            Pack contents are randomly determined. No real money transactions are involved. 
-            This is a fan-made project for educational purposes.
+            Todo es aleatorio y gratis. Solo para pasar el rato con los colegas.
           </p>
         </CardContent>
       </Card>

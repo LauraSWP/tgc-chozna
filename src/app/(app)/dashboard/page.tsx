@@ -38,39 +38,29 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       {/* Welcome Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Welcome back, {profile?.username || 'Developer'}!
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+          ¡Ey {profile?.username || 'Colega'}!
         </h1>
         <p className="text-gray-600 dark:text-gray-300">
-          Ready to build some legendary decks?
+          ¿Listo para jugar unas partidas?
         </p>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center space-x-2">
               <span className="text-2xl">🪙</span>
               <div>
                 <p className="text-2xl font-bold">{formatNumber(currency?.coins || 0)}</p>
-                <p className="text-sm text-gray-600">Coins</p>
+                <p className="text-sm text-gray-600">Moneditas</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl">💎</span>
-              <div>
-                <p className="text-2xl font-bold">{formatNumber(currency?.gems || 0)}</p>
-                <p className="text-sm text-gray-600">Gems</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+
 
         <Card>
           <CardContent className="p-6">
@@ -78,7 +68,7 @@ export default async function DashboardPage() {
               <span className="text-2xl">🃏</span>
               <div>
                 <p className="text-2xl font-bold">{formatNumber(collectionStats.total)}</p>
-                <p className="text-sm text-gray-600">Cards Owned</p>
+                <p className="text-sm text-gray-600">Cartas</p>
               </div>
             </div>
           </CardContent>
@@ -90,7 +80,7 @@ export default async function DashboardPage() {
               <span className="text-2xl">🏗️</span>
               <div>
                 <p className="text-2xl font-bold">{formatNumber(decks?.length || 0)}</p>
-                <p className="text-sm text-gray-600">Decks Built</p>
+                <p className="text-sm text-gray-600">Mazos</p>
               </div>
             </div>
           </CardContent>
@@ -102,19 +92,19 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              🛒 Shop
+              🛒 Tienda
             </CardTitle>
             <CardDescription>
-              Open booster packs and expand your collection
+              Abre sobres y consigue cartas chulas
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <p className="text-sm text-gray-600">
-                Base Set booster packs available for {formatCurrency(150, 'coins')}
+                Sobres Base disponibles por {formatCurrency(150)}
               </p>
               <Button asChild className="w-full">
-                <Link href="/shop">Visit Shop</Link>
+                <Link href="/shop">Ir a la Tienda</Link>
               </Button>
             </div>
           </CardContent>
@@ -123,19 +113,19 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              🏗️ Deck Builder
+              🏗️ Crear Mazos
             </CardTitle>
             <CardDescription>
-              Create and optimize your decks
+              Monta mazos para machacar
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <p className="text-sm text-gray-600">
-                {decks?.length ? `You have ${decks.length} deck${decks.length !== 1 ? 's' : ''}` : 'Start building your first deck'}
+                {decks?.length ? `Tienes ${decks.length} mazo${decks.length !== 1 ? 's' : ''}` : 'Crea tu primer mazo'}
               </p>
               <Button asChild className="w-full" variant="outline">
-                <Link href="/decks">Manage Decks</Link>
+                <Link href="/decks">Ver Mazos</Link>
               </Button>
             </div>
           </CardContent>
@@ -144,19 +134,19 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              ⚔️ Play
+              ⚔️ Jugar
             </CardTitle>
             <CardDescription>
-              Battle other players online
+              Reta a tus colegas online
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <p className="text-sm text-gray-600">
-                Find opponents and test your strategies
+                Encuentra rivales y demuestra quién manda
               </p>
               <Button asChild className="w-full" variant="secondary">
-                <Link href="/play">Find Match</Link>
+                <Link href="/play">¡A Jugar!</Link>
               </Button>
             </div>
           </CardContent>
