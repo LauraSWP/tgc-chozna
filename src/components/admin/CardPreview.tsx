@@ -17,7 +17,8 @@ const CardPreview: React.FC<CardPreviewProps> = ({
   imageUrl,
   className 
 }) => {
-  const manaCost = formatManaCost(card.manaCost || '');
+  const manaCostString = formatManaCost(card.manaCost || '');
+  const manaCost = card.manaCost ? card.manaCost.match(/\{[^}]+\}/g) || [] : [];
   const rarityColor = getRarityColor(card.rarity || 'common');
 
   const frameClasses = {
@@ -52,7 +53,7 @@ const CardPreview: React.FC<CardPreviewProps> = ({
                   key={index}
                   className="w-4 h-4 rounded-full bg-gray-200 border border-gray-400 flex items-center justify-center text-xs font-bold"
                 >
-                  {symbol}
+                  {symbol.replace(/[{}]/g, '')}
                 </div>
               ))}
             </div>
