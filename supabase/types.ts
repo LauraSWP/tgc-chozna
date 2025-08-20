@@ -85,6 +85,82 @@ export type Database = {
           }
         ]
       }
+      profiles: {
+        Row: {
+          id: string
+          username: string
+          role: Database["public"]["Enums"]["player_role"]
+          avatar_url: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id: string
+          username: string
+          role?: Database["public"]["Enums"]["player_role"]
+          avatar_url?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          username?: string
+          role?: Database["public"]["Enums"]["player_role"]
+          avatar_url?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      decks: {
+        Row: {
+          id: string
+          owner: string
+          name: string
+          description: string | null
+          is_legal: boolean | null
+          format: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          owner: string
+          name: string
+          description?: string | null
+          is_legal?: boolean | null
+          format?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          owner?: string
+          name?: string
+          description?: string | null
+          is_legal?: boolean | null
+          format?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decks_owner_fkey"
+            columns: ["owner"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       // ... other table types will be here when generated
     }
     Views: {
