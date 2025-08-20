@@ -51,7 +51,8 @@ const CardView: React.FC<CardViewProps> = ({
   };
 
   const rarityColor = getRarityColor(card.rarity);
-  const manaCost = formatManaCost(card.manaCost || '');
+  const manaCostString = formatManaCost(card.manaCost || '');
+  const manaCost = card.manaCost ? card.manaCost.match(/\{[^}]+\}/g) || [] : [];
 
   return (
     <Card
@@ -76,7 +77,7 @@ const CardView: React.FC<CardViewProps> = ({
           {manaCost.length > 0 && (
             <div className="flex gap-0.5 flex-shrink-0">
               {manaCost.map((symbol, index) => (
-                <ManaSymbol key={index} symbol={symbol} />
+                <ManaSymbol key={index} symbol={symbol.replace(/[{}]/g, '')} />
               ))}
             </div>
           )}
