@@ -77,12 +77,41 @@ const rarityColors = {
   mythic: '#F59E0B'
 };
 
-const raritySymbols = {
-  common: '●',
-  uncommon: '◆',
-  rare: '★',
-  mythic: '◆'
-};
+  const raritySymbols = {
+    common: '●',
+    uncommon: '◆',
+    rare: '★',
+    mythic: '◆'
+  };
+
+  // Función para obtener bordes especiales según rareza
+  const getRarityBorder = (rarity: string): string => {
+    switch (rarity.toLowerCase()) {
+      case 'mythic':
+        return 'border-4 border-double border-orange-400 shadow-2xl shadow-orange-500/50';
+      case 'rare':
+        return 'border-4 border-blue-400 shadow-xl shadow-blue-500/30';
+      case 'uncommon':
+        return 'border-3 border-green-400 shadow-lg shadow-green-500/20';
+      case 'common':
+      default:
+        return 'border-2 border-gray-800';
+    }
+  };
+
+  // Función para obtener efectos especiales de rareza
+  const getRarityEffects = (rarity: string): string => {
+    switch (rarity.toLowerCase()) {
+      case 'mythic':
+        return 'before:absolute before:inset-0 before:bg-gradient-to-br before:from-orange-500/20 before:via-yellow-500/10 before:to-red-500/20 before:rounded-lg before:pointer-events-none';
+      case 'rare':
+        return 'before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-500/15 before:via-indigo-500/10 before:to-purple-500/15 before:rounded-lg before:pointer-events-none';
+      case 'uncommon':
+        return 'before:absolute before:inset-0 before:bg-gradient-to-br before:from-green-500/10 before:via-emerald-500/5 before:to-teal-500/10 before:rounded-lg before:pointer-events-none';
+      default:
+        return '';
+    }
+  };
 
 export default function MagicCard({ 
   name, 
@@ -113,12 +142,71 @@ export default function MagicCard({
     xl: { name: 'text-xl', type: 'text-lg', rules: 'text-lg', pt: 'text-xl' }
   };
 
-  // Obtener color específico del tipo
-  const getTypeColor = (cardType: string) => {
-    const typeKey = Object.keys(typeColors).find(key => 
-      cardType.toLowerCase().includes(key.toLowerCase())
-    );
-    return typeColors[typeKey as keyof typeof typeColors] || typeColors.default;
+  // Función para analizar el maná dominante y obtener color de fondo
+  const getDominantManaColor = (manaCost: string, cardType: string, customColor?: string): string => {
+    // Si hay un color personalizado asignado desde el admin, usarlo
+    if (customColor) {
+      return customColor;
+    }
+
+    // Colores por tipo de maná dominante
+    const manaColors = {
+      'B': 'from-yellow-600 via-yellow-500 to-yellow-700',  // Blanco
+      'A': 'from-blue-600 via-blue-500 to-blue-700',       // Azul
+      'N': 'from-purple-600 via-purple-500 to-purple-700', // Negro
+      'R': 'from-red-600 via-red-500 to-red-700',          // Rojo
+      'V': 'from-green-600 via-green-500 to-green-700',    // Verde
+      'multicolor': 'from-orange-600 via-yellow-500 to-purple-600', // Multicolor
+      'colorless': 'from-gray-600 via-gray-500 to-gray-700', // Incoloro
+      'land': 'from-amber-600 via-brown-500 to-yellow-700'   // Tierras
+    };
+
+    // Si es una tierra, usar color de tierra
+    if (cardType.toLowerCase().includes('tierra') || cardType.toLowerCase().includes('land')) {
+      return manaColors.land;
+    }
+
+    if (!manaCost) {
+      return manaColors.colorless;
+    }
+
+    // Extraer símbolos de maná
+    const manaSymbols = manaCost.match(/\{[^}]+\}/g) || [];
+    const colorCounts = { B: 0, A: 0, N: 0, R: 0, V: 0, W: 0, U: 0, G: 0 };
+    
+    manaSymbols.forEach(symbol => {
+      const cleanSymbol = symbol.replace(/[{}]/g, '').toUpperCase();
+      if (colorCounts.hasOwnProperty(cleanSymbol)) {
+        colorCounts[cleanSymbol as keyof typeof colorCounts]++;
+      }
+    });
+
+    // Convertir colores ingleses a españoles para compatibilidad
+    colorCounts.B += colorCounts.W; // W -> B (Blanco)
+    colorCounts.A += colorCounts.U; // U -> A (Azul) 
+    colorCounts.V += colorCounts.G; // G -> V (Verde)
+
+    // Encontrar el color dominante
+    const totalColors = colorCounts.B + colorCounts.A + colorCounts.N + colorCounts.R + colorCounts.V;
+    
+    if (totalColors === 0) {
+      return manaColors.colorless;
+    }
+
+    if (totalColors > 1) {
+      // Verificar si hay un color claramente dominante (>50%)
+      const maxCount = Math.max(colorCounts.B, colorCounts.A, colorCounts.N, colorCounts.R, colorCounts.V);
+      if (maxCount / totalColors <= 0.5) {
+        return manaColors.multicolor;
+      }
+    }
+
+    // Retornar el color con más símbolos
+    if (colorCounts.B >= Math.max(colorCounts.A, colorCounts.N, colorCounts.R, colorCounts.V)) return manaColors.B;
+    if (colorCounts.A >= Math.max(colorCounts.N, colorCounts.R, colorCounts.V)) return manaColors.A;
+    if (colorCounts.N >= Math.max(colorCounts.R, colorCounts.V)) return manaColors.N;
+    if (colorCounts.R >= colorCounts.V) return manaColors.R;
+    return manaColors.V;
   };
 
   const handleCardClick = () => {
@@ -169,7 +257,7 @@ export default function MagicCard({
       onClick={handleCardClick}
     >
       {/* Card Frame */}
-      <div className={`w-full h-full rounded-lg overflow-hidden shadow-lg border-2 border-gray-800 bg-gradient-to-b ${getTypeColor(type)} relative`}>
+      <div className={`w-full h-full rounded-lg overflow-hidden shadow-lg ${getRarityBorder(rarity)} bg-gradient-to-b ${getDominantManaColor(manaCost, type)} relative ${getRarityEffects(rarity)}`}>
         
         {/* Header */}
         <div className="relative bg-gradient-to-r from-gray-200 to-gray-300 px-2 py-1 border-b border-gray-400">
