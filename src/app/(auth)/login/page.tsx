@@ -16,7 +16,53 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [emailPlaceholder, setEmailPlaceholder] = useState('staresgay@factos.com');
+  const [usernameValidation, setUsernameValidation] = useState('');
+  const [showUsernameConfirm, setShowUsernameConfirm] = useState(false);
   const router = useRouter();
+
+  const validateUsername = (name: string) => {
+    if (!name || name.length < 3) return '';
+    
+    const lowercaseName = name.toLowerCase();
+    
+    // Lista de nombres cuestionables
+    const questionableNames = [
+      'admin', 'root', 'god', 'señor', 'jefe', 'rey', 'emperador',
+      'crack', 'pro', 'master', 'legend', 'boss', 'champion',
+      'destroyer', 'killer', 'dark', 'shadow', 'demon', 'death',
+      'angel', 'hero', 'warrior', 'fighter', 'slayer',
+      'xxxx', '123', 'gamer', 'player', 'user', 'noob'
+    ];
+
+    const cringe = questionableNames.some(bad => lowercaseName.includes(bad));
+    
+    if (cringe) {
+      return `¿En serio? ¿${name}? Bueno, si a ti te gusta...`;
+    } else if (name.length > 15) {
+      return `${name} está un poco largo, ¿no? Pero bueno...`;
+    } else if (/^\d+$/.test(name)) {
+      return `¿Solo números? ¿${name}? Vale, tú sabrás...`;
+    } else if (name.includes('_') && name.split('_').length > 3) {
+      return `Muchas rayitas bajas ahí, ${name}, pero vale...`;
+    } else {
+      return `${name}... no está mal, supongo.`;
+    }
+  };
+
+  const handleUsernameChange = (value: string) => {
+    setUsername(value);
+    const validation = validateUsername(value);
+    setUsernameValidation(validation);
+    setShowUsernameConfirm(validation !== '' && value.length >= 3);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    // Reset email placeholder to default when password changes
+    if (value !== '123456' && value !== '654321') {
+      setEmailPlaceholder('staresgay@factos.com');
+    }
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +79,7 @@ export default function LoginPage() {
 
     if (password === '654321') {
       setEmailPlaceholder('Eso tampoco te va a funcionar IMBÉCIL');
-      setError('¿En serio? ¿654321? ¿Creías que eras muy listo?');
+      setError('Eso tampoco te va a funcionar IMBÉCIL');
       setIsLoading(false);
       return;
     }
@@ -105,12 +151,12 @@ export default function LoginPage() {
         <Card className="border-2 border-red-200">
           <CardHeader>
             <CardTitle className="text-center text-red-600">
-              {isLogin ? '🚪 Entrar al Caos' : '👑 Crear Cuenta Pro'}
+              {isLogin ? '🚪 Entrar' : '👑 Crear Cuenta'}
             </CardTitle>
             <CardDescription className="text-center">
               {isLogin 
-                ? 'Mete tus datos para entrar al desmadre'
-                : 'Crea tu cuenta para empezar a trollear'
+                ? 'Mete tus datos para entrar'
+                : 'Crea tu cuenta para empezar'
               }
             </CardDescription>
           </CardHeader>
@@ -125,11 +171,45 @@ export default function LoginPage() {
                     id="username"
                     type="text"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => handleUsernameChange(e.target.value)}
                     required={!isLogin}
                     className="w-full border-2 border-red-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                     placeholder="Ej: ElTioDeLaVara"
-                  /> 
+                  />
+                  
+                  {/* Username Validation */}
+                  {usernameValidation && (
+                    <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                      <p className="text-sm text-yellow-800 mb-2">
+                        {usernameValidation}
+                      </p>
+                      {showUsernameConfirm && (
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUsernameValidation('');
+                              setShowUsernameConfirm(false);
+                            }}
+                            className="px-3 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
+                          >
+                            ✓ Vale, acepto
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setUsername('');
+                              setUsernameValidation('');
+                              setShowUsernameConfirm(false);
+                            }}
+                            className="px-3 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600"
+                          >
+                            ✗ Cambiar
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               
@@ -156,7 +236,7 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => handlePasswordChange(e.target.value)}
                   required
                   className="w-full border-2 border-red-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                   placeholder="Mínimo6caracteres"
