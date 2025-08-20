@@ -23,10 +23,17 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
 
-    // Validación de contraseña idiota
+    // Validación de contraseñas idiotas
     if (password === '123456') {
       setEmailPlaceholder('Te dije que no sea 123456 IMBÉCIL');
       setError('En serio... ¿123456? ¿Esa es tu contraseña?');
+      setIsLoading(false);
+      return;
+    }
+
+    if (password === '654321') {
+      setEmailPlaceholder('Eso tampoco te va a funcionar IMBÉCIL');
+      setError('¿En serio? ¿654321? ¿Creías que eras muy listo?');
       setIsLoading(false);
       return;
     }
