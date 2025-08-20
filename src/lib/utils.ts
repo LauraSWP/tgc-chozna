@@ -26,7 +26,7 @@ export function getRarityColor(rarity: string): string {
 }
 
 export function formatCardName(name: string): string {
-  return name.replace(/'/g, ''').trim();
+  return name.replace(/'/g, "'").trim();
 }
 
 export function truncateText(text: string, maxLength: number): string {
