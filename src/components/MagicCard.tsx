@@ -169,7 +169,7 @@ export default function MagicCard({
               {name}
             </span>
             <div className="flex items-center space-x-1 ml-2">
-              {manaCost.map((symbol, index) => (
+              {(manaCost?.match(/\{[^}]+\}/g) || []).map((symbol, index) => (
                 <ManaSymbol key={index} symbol={symbol.replace(/[{}]/g, '')} />
               ))}
             </div>
