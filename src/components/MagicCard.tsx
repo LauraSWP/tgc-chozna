@@ -199,12 +199,23 @@ export default function MagicCard({
           )}
         </div>
 
-        {/* Power/Toughness */}
+        {/* Power/Toughness with Icons */}
         {(power !== undefined && toughness !== undefined) && (
           <div className="absolute bottom-2 right-2 bg-gray-200 border-2 border-gray-800 rounded-md px-2 py-1">
-            <span className={`font-bold text-black ${textSizes[size].pt}`}>
-              {power}/{toughness}
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <span className="text-red-600">⚔️</span>
+                <span className={`font-bold text-black ${textSizes[size].pt}`}>
+                  {power}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-blue-600">🛡️</span>
+                <span className={`font-bold text-black ${textSizes[size].pt}`}>
+                  {toughness}
+                </span>
+              </div>
+            </div>
           </div>
         )}
 

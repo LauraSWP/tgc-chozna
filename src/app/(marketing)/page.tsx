@@ -213,8 +213,18 @@ export default function HomePage() {
 
               {/* Call to Action */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Button size="lg" className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-lg">
-                  Aceptar la Realidad
+                <Button 
+                  size="lg" 
+                  asChild
+                  className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-lg"
+                >
+                  <a 
+                    href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1&pp=ygUJcmljayByb2xsoAcB" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    Aceptar la Realidad
+                  </a>
                 </Button>
                 <Button size="lg" variant="outline" className="border-yellow-500 text-yellow-400 hover:bg-yellow-50/10">
                   Seguir Preguntando
