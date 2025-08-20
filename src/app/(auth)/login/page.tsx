@@ -61,24 +61,9 @@ export default function LoginPage() {
         }
       }
     } catch (error: any) {
-      setError(error.message || 'Authentication failed');
+      setError(error.message || 'Error tío, algo ha petado');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGoogleAuth = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-
-      if (error) throw error;
-    } catch (error: any) {
-      setError(error.message || 'Google authentication failed');
     }
   };
 
@@ -89,44 +74,53 @@ export default function LoginPage() {
       if (error) throw error;
       
       if (data.user) {
-        // Create a guest profile
+        // Create a guest profile with Spanish brainrot names
+        const randomNames = [
+          'ElTioDeLaVara', 'Siestero', 'Coleguita', 'Machote', 'Cachondo', 
+          'Parrillero', 'Juerguista', 'Vacilón', 'ChavalinCool', 'Cañero',
+          'Madridista', 'Sevillano', 'Gallego', 'Andaluz', 'Guiri'
+        ];
+        const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
+        
         await supabase
           .from('profiles')
           .upsert({
             id: data.user.id,
-            username: `Guest_${data.user.id.slice(0, 8)}`,
+            username: `${randomName}_${data.user.id.slice(0, 4)}`,
           });
 
         router.push('/dashboard');
       }
     } catch (error: any) {
-      setError(error.message || 'Guest login failed');
+      setError(error.message || 'Error al entrar como invitado, qué faena');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50 dark:from-gray-900 dark:to-red-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Header */}
         <div className="text-center">
           <Link href="/" className="inline-block">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              🃏 My TCG
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-yellow-600 bg-clip-text text-transparent">
+              🃏 TCG Chetado
             </h1>
           </Link>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">
-            {isLogin ? 'Welcome back!' : 'Join the community'}
+          <p className="text-gray-600 dark:text-gray-300 mt-2 text-lg">
+            {isLogin ? '¡Buenas, máquina! 💀' : '¡Únete al cachondeo! 🔥'}
           </p>
         </div>
 
         {/* Auth Form */}
-        <Card>
+        <Card className="border-2 border-red-200">
           <CardHeader>
-            <CardTitle>{isLogin ? 'Log In' : 'Sign Up'}</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-center text-red-600">
+              {isLogin ? '🚪 Entrar al Caos' : '👑 Crear Cuenta Pro'}
+            </CardTitle>
+            <CardDescription className="text-center">
               {isLogin 
-                ? 'Enter your credentials to access your account'
-                : 'Create an account to start playing'
+                ? 'Mete tus datos para entrar al desmadre'
+                : 'Crea tu cuenta para empezar a trollear'
               }
             </CardDescription>
           </CardHeader>
@@ -135,7 +129,7 @@ export default function LoginPage() {
               {!isLogin && (
                 <div>
                   <label htmlFor="username" className="block text-sm font-medium mb-1">
-                    Username
+                    Nombre de Usuario (Sin tonterías)
                   </label>
                   <input
                     id="username"
@@ -143,15 +137,15 @@ export default function LoginPage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required={!isLogin}
-                    className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your username"
+                    className="w-full border-2 border-red-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                    placeholder="Ej: ElTioDeLaVara"
                   />
                 </div>
               )}
               
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Email
+                  Email (Que funcione)
                 </label>
                 <input
                   id="email"
@@ -159,14 +153,14 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your email"
+                  className="w-full border-2 border-red-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  placeholder="tuemail@cachondeo.es"
                 />
               </div>
 
               <div>
                 <label htmlFor="password" className="block text-sm font-medium mb-1">
-                  Password
+                  Contraseña (Que no sea 123456)
                 </label>
                 <input
                   id="password"
@@ -174,52 +168,44 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your password"
+                  className="w-full border-2 border-red-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  placeholder="Mínimo6caracteres"
                   minLength={6}
                 />
               </div>
 
               {error && (
-                <div className="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-                  {error}
+                <div className="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-md border-l-4 border-red-500">
+                  💀 {error}
                 </div>
               )}
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-600 hover:to-yellow-600 text-white font-bold text-lg"
                 disabled={isLoading}
               >
-                {isLoading ? 'Loading...' : (isLogin ? 'Log In' : 'Sign Up')}
+                {isLoading ? '⏳ Cargando...' : (isLogin ? '🚀 ¡ENTRAR AL CAOS!' : '🎯 ¡CREAR CUENTA PRO!')}
               </Button>
             </form>
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-red-300" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-background px-2 text-muted-foreground font-bold">O si tienes hueva</span>
               </div>
             </div>
 
-            {/* OAuth Options */}
+            {/* Guest Option */}
             <div className="space-y-2">
               <Button
                 variant="outline"
-                className="w-full"
-                onClick={handleGoogleAuth}
-              >
-                Continue with Google
-              </Button>
-              
-              <Button
-                variant="outline"
-                className="w-full"
+                className="w-full border-2 border-yellow-300 text-yellow-600 hover:bg-yellow-50 font-bold"
                 onClick={handleGuestPlay}
               >
-                Play as Guest
+                🎮 Jugar como Invitado (Modo Fantasma)
               </Button>
             </div>
 
@@ -227,35 +213,42 @@ export default function LoginPage() {
             <div className="text-center text-sm">
               {isLogin ? (
                 <span>
-                  Don't have an account?{' '}
+                  ¿No tienes cuenta aún?{' '}
                   <button
                     type="button"
                     onClick={() => setIsLogin(false)}
-                    className="text-blue-600 hover:underline"
+                    className="text-red-600 hover:underline font-bold"
                   >
-                    Sign up
+                    ¡Crear una ya!
                   </button>
                 </span>
               ) : (
                 <span>
-                  Already have an account?{' '}
+                  ¿Ya tienes cuenta?{' '}
                   <button
                     type="button"
                     onClick={() => setIsLogin(true)}
-                    className="text-blue-600 hover:underline"
+                    className="text-red-600 hover:underline font-bold"
                   >
-                    Log in
+                    Entrar como pro
                   </button>
                 </span>
               )}
+            </div>
+
+            {/* Fun motivational text */}
+            <div className="text-center text-xs text-gray-500 mt-4 space-y-1">
+              <p>🔥 Sin censura, sin límites 🔥</p>
+              <p>💀 100% humor negro permitido 💀</p>
+              <p>🤡 Comunidad de puro brainrot 🤡</p>
             </div>
           </CardContent>
         </Card>
 
         {/* Back to Home */}
         <div className="text-center">
-          <Link href="/" className="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
-            ← Back to Home
+          <Link href="/" className="text-sm text-gray-600 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 font-medium">
+            ← Regresar al inicio
           </Link>
         </div>
       </div>
