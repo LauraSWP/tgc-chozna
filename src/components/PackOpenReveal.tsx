@@ -81,9 +81,9 @@ const PackOpenReveal: React.FC<PackOpenRevealProps> = ({
       <Card className="pack-opening-interface">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Open Booster Packs</span>
+            <span>Abrir Sobres</span>
             <span className="text-sm font-normal">
-              {formatCurrency(userCoins, 'coins')}
+              {formatCurrency(userCoins)}
             </span>
           </CardTitle>
         </CardHeader>
@@ -104,7 +104,7 @@ const PackOpenReveal: React.FC<PackOpenRevealProps> = ({
           {/* Quantity Selection */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              Quantity (Cost: {formatCurrency(packPrice * quantity, 'coins')})
+              Cantidad (Cuesta: {formatCurrency(packPrice * quantity)})
             </label>
             <div className="flex items-center gap-2">
               <Button
@@ -146,7 +146,7 @@ const PackOpenReveal: React.FC<PackOpenRevealProps> = ({
 
           {!canAfford && (
             <p className="text-sm text-red-600 text-center">
-              Insufficient coins! Need {formatCurrency(packPrice * quantity - userCoins, 'coins')} more.
+              ¡No tienes suficientes moneditas! Te faltan {formatCurrency(packPrice * quantity - userCoins)}.
             </p>
           )}
         </CardContent>
