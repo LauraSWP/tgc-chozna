@@ -112,11 +112,11 @@ export default function HomePage() {
             {/* Right side - Hero Image */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
-                {/* Imagen de Dragonite "¡Por España!" */}
+                {/* Imagen de Dragonite "¡Por ESPAÑA!" */}
                 <div className="w-96 h-96 lg:w-[500px] lg:h-[500px] rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl">
                   <img 
                     src="/assets/images/españa.jpeg" 
-                    alt="¡Por España! Dragonite" 
+                    alt="¡Por ESPAÑA! Dragonite" 
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -188,14 +188,23 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-900/50 to-blue-900/50 border-green-500/30 backdrop-blur-sm">
-              <CardContent className="p-8 text-center">
-                <div className="text-4xl mb-4">🏆</div>
-                <h3 className="text-2xl font-bold text-white mb-4">Competición</h3>
-                <p className="text-gray-300">
-                  Participa en torneos ranked, eventos especiales y desafíos semanales.
-                  Escala hasta convertirte en leyenda.
-                </p>
+            <Card className="bg-gradient-to-br from-yellow-900/50 to-orange-900/50 border-yellow-500/30 backdrop-blur-sm">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-6">
+                  <div className="flex-shrink-0">
+                    <img 
+                      src="/assets/images/gato.jpg" 
+                      alt="Gato pensativo" 
+                      className="w-20 h-20 rounded-full object-cover border-2 border-yellow-400"
+                    />
+                  </div>
+                  <div className="text-center flex-1">
+                    <h3 className="text-2xl font-bold text-white mb-4">¿Por qué? ¿Qué necesidad había?</h3>
+                    <p className="text-gray-300">
+                      Buena pregunta, me alegra que me lo hayas preguntado. La respuesta es simple. Porque puedo.
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -278,7 +287,7 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold text-xl text-white mb-4">🃏 Skibidi TCG</h4>
               <p className="text-gray-400 text-sm">
-                El TCG más emocionante de España, con estrategia profunda y diversión garantizada.
+                El TCG más emocionante de ESPAÑA, con estrategia profunda y diversión garantizada.
               </p>
             </div>
             <div>
@@ -307,7 +316,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
-            <p>&copy; 2024 Skibidi TCG. Hecho con ❤️ en España.</p>
+            <p>&copy; 2024 Skibidi TCG. Hecho con ❤️ en ESPAÑA.</p>
           </div>
         </div>
       </footer>
