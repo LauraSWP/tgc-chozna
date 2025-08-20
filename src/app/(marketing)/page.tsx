@@ -239,30 +239,73 @@ export default function HomePage() {
       <section className="py-20 bg-black/20 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Tipos de Cartas</h2>
-            <p className="text-xl text-gray-300">Lo básico que necesitas saber</p>
+            <h2 className="text-4xl font-bold text-white mb-4">Cómo Funciona el Juego</h2>
+            <p className="text-xl text-gray-300">Lo básico que necesitas saber para no hacer el ridículo</p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl mb-2">🐉</div>
-              <h3 className="text-lg font-bold text-white mb-2">Criaturas</h3>
-              <p className="text-gray-400 text-sm">Atacan y defienden</p>
+          {/* Card Types */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-bold text-white mb-8 text-center">Tipos de Cartas</h3>
+            <div className="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+              <div className="text-center bg-green-900/30 p-4 rounded-lg">
+                <div className="text-4xl mb-2">🐉</div>
+                <h4 className="text-lg font-bold text-white mb-2">Criaturas</h4>
+                <p className="text-gray-400 text-sm">Atacan al rival y defienden. Tienen ⚔️ ataque y 🛡️ defensa.</p>
+              </div>
+              <div className="text-center bg-blue-900/30 p-4 rounded-lg">
+                <div className="text-4xl mb-2">⚡</div>
+                <h4 className="text-lg font-bold text-white mb-2">Instantáneos</h4>
+                <p className="text-gray-400 text-sm">Se juegan cuando quieras, incluso en el turno del rival.</p>
+              </div>
+              <div className="text-center bg-red-900/30 p-4 rounded-lg">
+                <div className="text-4xl mb-2">🔮</div>
+                <h4 className="text-lg font-bold text-white mb-2">Conjuros</h4>
+                <p className="text-gray-400 text-sm">Efectos únicos que se hacen y van al cementerio.</p>
+              </div>
+              <div className="text-center bg-yellow-900/30 p-4 rounded-lg">
+                <div className="text-4xl mb-2">🏞️</div>
+                <h4 className="text-lg font-bold text-white mb-2">Tierras</h4>
+                <p className="text-gray-400 text-sm">Dan maná (energía) para jugar las otras cartas.</p>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl mb-2">⚡</div>
-              <h3 className="text-lg font-bold text-white mb-2">Instantáneos</h3>
-              <p className="text-gray-400 text-sm">Se juegan al momento</p>
+          </div>
+
+          {/* Mana Types */}
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-8 text-center">Tipos de Maná</h3>
+            <p className="text-center text-gray-300 mb-8">Cada carta necesita maná específico para jugarse</p>
+            <div className="grid md:grid-cols-5 gap-4 max-w-5xl mx-auto">
+              <div className="text-center bg-white/10 p-4 rounded-lg">
+                <div className="text-3xl mb-2">☀️</div>
+                <h4 className="text-lg font-bold text-yellow-400 mb-1">W (Blanco)</h4>
+                <p className="text-gray-400 text-xs">Luz, curación, orden</p>
+              </div>
+              <div className="text-center bg-white/10 p-4 rounded-lg">
+                <div className="text-3xl mb-2">💧</div>
+                <h4 className="text-lg font-bold text-blue-400 mb-1">U (Azul)</h4>
+                <p className="text-gray-400 text-xs">Agua, magia, control</p>
+              </div>
+              <div className="text-center bg-white/10 p-4 rounded-lg">
+                <div className="text-3xl mb-2">💀</div>
+                <h4 className="text-lg font-bold text-purple-400 mb-1">B (Negro)</h4>
+                <p className="text-gray-400 text-xs">Muerte, poder, sacrificio</p>
+              </div>
+              <div className="text-center bg-white/10 p-4 rounded-lg">
+                <div className="text-3xl mb-2">🔥</div>
+                <h4 className="text-lg font-bold text-red-400 mb-1">R (Rojo)</h4>
+                <p className="text-gray-400 text-xs">Fuego, velocidad, caos</p>
+              </div>
+              <div className="text-center bg-white/10 p-4 rounded-lg">
+                <div className="text-3xl mb-2">🌿</div>
+                <h4 className="text-lg font-bold text-green-400 mb-1">G (Verde)</h4>
+                <p className="text-gray-400 text-xs">Naturaleza, fuerza, criaturas</p>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl mb-2">🔮</div>
-              <h3 className="text-lg font-bold text-white mb-2">Conjuros</h3>
-              <p className="text-gray-400 text-sm">Efectos únicos</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-2">🏞️</div>
-              <h3 className="text-lg font-bold text-white mb-2">Tierras</h3>
-              <p className="text-gray-400 text-sm">Dan maná para jugar</p>
+            <div className="text-center mt-6">
+              <p className="text-gray-400 text-sm">
+                Ejemplo: Una carta que cuesta <span className="font-mono bg-gray-800 px-2 py-1 rounded">2RG</span> necesita 
+                2 maná cualquiera + 1 🔥 rojo + 1 🌿 verde
+              </p>
             </div>
           </div>
         </div>

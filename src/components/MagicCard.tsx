@@ -17,6 +17,27 @@ interface MagicCardProps {
   onClick?: () => void;
 }
 
+const ManaSymbol: React.FC<{ symbol: string }> = ({ symbol }) => {
+  const getManaIcon = (sym: string) => {
+    switch (sym.toUpperCase()) {
+      case 'W': return { icon: '☀️', color: 'text-yellow-400' };
+      case 'U': return { icon: '💧', color: 'text-blue-400' };
+      case 'B': return { icon: '💀', color: 'text-purple-400' };
+      case 'R': return { icon: '🔥', color: 'text-red-400' };
+      case 'G': return { icon: '🌿', color: 'text-green-400' };
+      default: return { icon: sym, color: 'text-gray-400' };
+    }
+  };
+
+  const { icon, color } = getManaIcon(symbol);
+  
+  return (
+    <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-200 border border-gray-400 text-xs ${color}`}>
+      {icon}
+    </span>
+  );
+};
+
 // Colores por tipo de carta (como Magic)
 const typeColors = {
   // Básicos
@@ -148,13 +169,8 @@ export default function MagicCard({
               {name}
             </span>
             <div className="flex items-center space-x-1 ml-2">
-              {manaCost.split('').map((symbol, index) => (
-                <div
-                  key={index}
-                  className="w-4 h-4 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center font-bold"
-                >
-                  {symbol}
-                </div>
+              {manaCost.map((symbol, index) => (
+                <ManaSymbol key={index} symbol={symbol.replace(/[{}]/g, '')} />
               ))}
             </div>
           </div>
