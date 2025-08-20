@@ -181,17 +181,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Guest Option */}
-            <div className="space-y-2">
-              <Button
-                variant="outline"
-                className="w-full border-2 border-yellow-300 text-yellow-600 hover:bg-yellow-50 font-bold"
-                onClick={handleGuestPlay}
-              >
-                🎮 Jugar como Invitado (Modo Fantasma)
-              </Button>
-            </div>
-
             {/* Toggle Login/Signup */}
             <div className="text-center text-sm">
               {isLogin ? (
