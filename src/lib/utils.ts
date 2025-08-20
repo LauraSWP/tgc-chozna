@@ -103,7 +103,7 @@ export function truncateText(text: string, maxLength: number): string {
   return text.slice(0, maxLength) + '...'
 }
 
-// TCG specific utilities
+// TCG specific utilities - fixed exports
 export function getRarityColor(rarity: string): string {
   const rarityColors: Record<string, string> = {
     common: '#9ca3af',
