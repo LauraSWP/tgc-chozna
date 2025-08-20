@@ -287,7 +287,7 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold text-xl text-white mb-4">🃏 Skibidi TCG</h4>
               <p className="text-gray-400 text-sm">
-                El TCG más emocionante de ESPAÑA, con estrategia profunda y diversión garantizada.
+                El TCG más emocionante de ESPAÑA, segun estudio de la universidad de Mascachuches.
               </p>
             </div>
             <div>
