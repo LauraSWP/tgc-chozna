@@ -76,15 +76,15 @@ export default function HomePage() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-6 mb-8">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-yellow-400">500+</div>
+                  <div className="text-3xl font-bold text-yellow-400">MUCHAS</div>
                   <div className="text-sm text-gray-400">Cartas Únicas</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-400">1K+</div>
+                  <div className="text-3xl font-bold text-blue-400">ALGUNOS</div>
                   <div className="text-sm text-gray-400">Jugadores</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-400">24/7</div>
+                  <div className="text-3xl font-bold text-purple-400">DE VEZ EN CUANDO</div>
                   <div className="text-sm text-gray-400">Online</div>
                 </div>
               </div>
@@ -102,9 +102,9 @@ export default function HomePage() {
                   size="lg" 
                   variant="outline" 
                   asChild
-                  className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl text-lg backdrop-blur-sm"
+                  className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black px-8 py-4 rounded-xl text-lg font-bold shadow-xl transform transition hover:scale-105"
                 >
-                  <Link href="#cards">Ver Cartas</Link>
+                  <Link href="#cards">Ver las Cartas</Link>
                 </Button>
               </div>
             </div>
