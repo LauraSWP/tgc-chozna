@@ -139,7 +139,7 @@ export default function LoginPage() {
                     required={!isLogin}
                     className="w-full border-2 border-red-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                     placeholder="Ej: ElTioDeLaVara"
-                  />
+                  /> 
                 </div>
               )}
               
