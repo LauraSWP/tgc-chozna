@@ -19,20 +19,29 @@ interface MagicCardProps {
 
 const ManaSymbol: React.FC<{ symbol: string }> = ({ symbol }) => {
   const getManaIcon = (sym: string) => {
+    // Si es un número (maná incoloro)
+    if (/^\d+$/.test(sym)) {
+      return { icon: sym, color: 'text-gray-700', bg: 'bg-gray-300' };
+    }
+    
     switch (sym.toUpperCase()) {
-      case 'W': return { icon: '☀️', color: 'text-yellow-400' };
-      case 'U': return { icon: '💧', color: 'text-blue-400' };
-      case 'B': return { icon: '💀', color: 'text-purple-400' };
-      case 'R': return { icon: '🔥', color: 'text-red-400' };
-      case 'G': return { icon: '🌿', color: 'text-green-400' };
-      default: return { icon: sym, color: 'text-gray-400' };
+      case 'B': return { icon: '☀️', color: 'text-yellow-400', bg: 'bg-yellow-100' };  // Blanco
+      case 'A': return { icon: '💧', color: 'text-blue-400', bg: 'bg-blue-100' };     // Azul
+      case 'N': return { icon: '💀', color: 'text-purple-400', bg: 'bg-purple-100' }; // Negro
+      case 'R': return { icon: '🔥', color: 'text-red-400', bg: 'bg-red-100' };       // Rojo
+      case 'V': return { icon: '🌿', color: 'text-green-400', bg: 'bg-green-100' };   // Verde
+      // Compatibilidad con Magic en inglés
+      case 'W': return { icon: '☀️', color: 'text-yellow-400', bg: 'bg-yellow-100' };
+      case 'U': return { icon: '💧', color: 'text-blue-400', bg: 'bg-blue-100' };
+      case 'G': return { icon: '🌿', color: 'text-green-400', bg: 'bg-green-100' };
+      default: return { icon: sym, color: 'text-gray-400', bg: 'bg-gray-200' };
     }
   };
 
-  const { icon, color } = getManaIcon(symbol);
+  const { icon, color, bg } = getManaIcon(symbol);
   
   return (
-    <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full bg-gray-200 border border-gray-400 text-xs ${color}`}>
+    <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full ${bg} border border-gray-400 text-xs font-bold ${color}`}>
       {icon}
     </span>
   );

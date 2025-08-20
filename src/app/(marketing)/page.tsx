@@ -277,17 +277,17 @@ export default function HomePage() {
             <div className="grid md:grid-cols-5 gap-4 max-w-5xl mx-auto">
               <div className="text-center bg-white/10 p-4 rounded-lg">
                 <div className="text-3xl mb-2">☀️</div>
-                <h4 className="text-lg font-bold text-yellow-400 mb-1">W (Blanco)</h4>
+                <h4 className="text-lg font-bold text-yellow-400 mb-1">B (Blanco)</h4>
                 <p className="text-gray-400 text-xs">Luz, curación, orden</p>
               </div>
               <div className="text-center bg-white/10 p-4 rounded-lg">
                 <div className="text-3xl mb-2">💧</div>
-                <h4 className="text-lg font-bold text-blue-400 mb-1">U (Azul)</h4>
+                <h4 className="text-lg font-bold text-blue-400 mb-1">A (Azul)</h4>
                 <p className="text-gray-400 text-xs">Agua, magia, control</p>
               </div>
               <div className="text-center bg-white/10 p-4 rounded-lg">
                 <div className="text-3xl mb-2">💀</div>
-                <h4 className="text-lg font-bold text-purple-400 mb-1">B (Negro)</h4>
+                <h4 className="text-lg font-bold text-purple-400 mb-1">N (Negro)</h4>
                 <p className="text-gray-400 text-xs">Muerte, poder, sacrificio</p>
               </div>
               <div className="text-center bg-white/10 p-4 rounded-lg">
@@ -297,15 +297,24 @@ export default function HomePage() {
               </div>
               <div className="text-center bg-white/10 p-4 rounded-lg">
                 <div className="text-3xl mb-2">🌿</div>
-                <h4 className="text-lg font-bold text-green-400 mb-1">G (Verde)</h4>
+                <h4 className="text-lg font-bold text-green-400 mb-1">V (Verde)</h4>
                 <p className="text-gray-400 text-xs">Naturaleza, fuerza, criaturas</p>
               </div>
             </div>
             <div className="text-center mt-6">
-              <p className="text-gray-400 text-sm">
-                Ejemplo: Una carta que cuesta <span className="font-mono bg-gray-800 px-2 py-1 rounded">2RG</span> necesita 
-                2 maná cualquiera + 1 🔥 rojo + 1 🌿 verde
-              </p>
+              <div className="bg-gray-800 rounded-lg p-4 max-w-md mx-auto">
+                <p className="text-gray-300 text-sm mb-2">
+                  <strong>Ejemplo de coste:</strong>
+                </p>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-300 border border-gray-400 text-xs font-bold text-gray-700">3</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-100 border border-gray-400 text-xs font-bold text-red-400">🔥</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 border border-gray-400 text-xs font-bold text-green-400">🌿</span>
+                </div>
+                <p className="text-gray-400 text-xs">
+                  = 3 maná cualquiera + 1 rojo + 1 verde = 5 maná total
+                </p>
+              </div>
             </div>
           </div>
         </div>
