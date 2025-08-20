@@ -8,7 +8,7 @@ export default function HomePage() {
   const featuredCards = [
     {
       name: "Dragón de Fuego",
-      manaCost: "4RR",
+      manaCost: "{4}{R}{R}",
       type: "Criatura — Dragón",
       power: 5,
       toughness: 4,
@@ -18,7 +18,7 @@ export default function HomePage() {
     },
     {
       name: "Guerrero Élfico",
-      manaCost: "1G",
+      manaCost: "{1}{V}",
       type: "Criatura — Elfo Guerrero",
       power: 2,
       toughness: 2,
@@ -28,7 +28,7 @@ export default function HomePage() {
     },
     {
       name: "Relámpago",
-      manaCost: "R",
+      manaCost: "{R}",
       type: "Instantáneo",
       rarity: "common" as const,
       rulesText: "El Relámpago hace 3 puntos de daño a cualquier objetivo.",
@@ -36,7 +36,7 @@ export default function HomePage() {
     },
     {
       name: "Ángel Guardián",
-      manaCost: "3WW",
+      manaCost: "{3}{B}{B}",
       type: "Criatura — Ángel",
       power: 3,
       toughness: 4,
