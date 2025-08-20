@@ -105,7 +105,7 @@ export default async function AdminPage() {
                 {Object.entries(cardStats).map(([rarity, count]) => (
                   <div key={rarity} className="flex justify-between">
                     <span className="capitalize">{rarity}:</span>
-                    <span>{count}</span>
+                    <span>{count as number}</span>
                   </div>
                 ))}
               </div>
