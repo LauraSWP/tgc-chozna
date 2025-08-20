@@ -12,7 +12,7 @@ interface MagicCardProps {
   artwork?: string;
   rulesText: string;
   flavorText?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'xl';
   className?: string;
   onClick?: () => void;
 }
@@ -70,15 +70,17 @@ export default function MagicCard({
 }: MagicCardProps) {
   const [isZoomed, setIsZoomed] = useState(false);
   const sizeClasses = {
-    small: 'w-32 h-44',
-    medium: 'w-48 h-64',
-    large: 'w-64 h-80'
+    small: 'w-40 h-56',
+    medium: 'w-56 h-76',
+    large: 'w-72 h-96',
+    xl: 'w-80 h-[28rem]'
   };
 
   const textSizes = {
-    small: { name: 'text-xs', type: 'text-xs', rules: 'text-xs', pt: 'text-xs' },
-    medium: { name: 'text-sm', type: 'text-xs', rules: 'text-xs', pt: 'text-sm' },
-    large: { name: 'text-base', type: 'text-sm', rules: 'text-sm', pt: 'text-base' }
+    small: { name: 'text-sm', type: 'text-xs', rules: 'text-xs', pt: 'text-sm' },
+    medium: { name: 'text-base', type: 'text-sm', rules: 'text-sm', pt: 'text-base' },
+    large: { name: 'text-lg', type: 'text-base', rules: 'text-base', pt: 'text-lg' },
+    xl: { name: 'text-xl', type: 'text-lg', rules: 'text-lg', pt: 'text-xl' }
   };
 
   // Obtener color específico del tipo
@@ -107,7 +109,7 @@ export default function MagicCard({
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
           onClick={handleCloseZoom}
         >
-          <div className="relative max-w-md max-h-screen">
+          <div className="relative max-w-lg max-h-screen">
             <MagicCard
               name={name}
               manaCost={manaCost}
@@ -118,7 +120,7 @@ export default function MagicCard({
               artwork={artwork}
               rulesText={rulesText}
               flavorText={flavorText}
-              size="large"
+              size="xl"
               className="shadow-2xl"
             />
             <button

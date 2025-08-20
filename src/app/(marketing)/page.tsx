@@ -162,51 +162,65 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Game Features */}
-      <section className="py-20">
+      {/* Existential Cat Section */}
+      <section className="py-20 bg-gradient-to-br from-yellow-900/20 to-orange-900/20">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-8">
-            <Card className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border-blue-500/30 backdrop-blur-sm">
-              <CardContent className="p-8 text-center">
-                <div className="text-4xl mb-4">⚔️</div>
-                <h3 className="text-2xl font-bold text-white mb-4">Combate Estratégico</h3>
-                <p className="text-gray-300">
-                  Sistema de combate profundo con fases, stack de efectos e interacciones complejas.
-                  Domina el timing perfecto para ganar.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-sm">
-              <CardContent className="p-8 text-center">
-                <div className="text-4xl mb-4">🏗️</div>
-                <h3 className="text-2xl font-bold text-white mb-4">Constructor de Mazos</h3>
-                <p className="text-gray-300">
-                  Crea mazos únicos con nuestro constructor avanzado. Analiza curvas de maná, 
-                  sinergias y estadísticas detalladas.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-yellow-900/50 to-orange-900/50 border-yellow-500/30 backdrop-blur-sm">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <img 
-                      src="/assets/images/gato.jpg" 
-                      alt="Gato pensativo" 
-                      className="w-20 h-20 rounded-full object-cover border-2 border-yellow-400"
-                    />
-                  </div>
-                  <div className="text-center flex-1">
-                    <h3 className="text-2xl font-bold text-white mb-4">¿Por qué? ¿Qué necesidad había?</h3>
-                    <p className="text-gray-300">
-                      Buena pregunta, me alegra que me lo hayas preguntado. La respuesta es simple. Porque puedo.
-                    </p>
-                  </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Cat Image */}
+            <div className="flex justify-center lg:justify-start">
+              <div className="relative">
+                {/* Imagen del Gato Pensativo */}
+                <div className="w-96 h-96 lg:w-[400px] lg:h-[400px] rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl">
+                  <img 
+                    src="/assets/images/gato.jpg" 
+                    alt="Gato pensativo filosófico" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              </CardContent>
-            </Card>
+                {/* Glowing effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 rounded-full opacity-20 blur-xl scale-110"></div>
+                {/* Thinking glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-500 to-orange-400 rounded-full opacity-10 blur-2xl scale-125"></div>
+              </div>
+            </div>
+
+            {/* Right side - Content */}
+            <div className="text-center lg:text-left">
+              <div className="mb-8">
+                <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6">
+                  ¿Por qué? ¿Qué necesidad había?
+                </h2>
+                <p className="text-xl text-gray-300 max-w-xl">
+                  Buena pregunta, me alegra que me lo hayas preguntado. La respuesta es simple. Porque puedo.
+                </p>
+              </div>
+
+              {/* Philosophy Stats */}
+              <div className="grid grid-cols-3 gap-6 mb-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-400">∞</div>
+                  <div className="text-sm text-gray-400">Preguntas Sin Respuesta</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-400">42</div>
+                  <div className="text-sm text-gray-400">Respuesta Universal</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-400">1</div>
+                  <div className="text-sm text-gray-400">Gato Pensativo</div>
+                </div>
+              </div>
+
+              {/* Call to Action */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button size="lg" className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-lg">
+                  Aceptar la Realidad
+                </Button>
+                <Button size="lg" variant="outline" className="border-yellow-500 text-yellow-400 hover:bg-yellow-50/10">
+                  Seguir Preguntando
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
