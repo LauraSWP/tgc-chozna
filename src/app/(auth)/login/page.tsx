@@ -97,7 +97,7 @@ export default function LoginPage() {
             </h1>
           </Link>
           <p className="text-gray-600 dark:text-gray-300 mt-2 text-lg">
-            {isLogin ? '¡Buenas, máquina! 💀' : '¡Únete al cachondeo! 🔥'}
+            {isLogin ? '¡Buenas, máquina!' : 'Crea tu cuenta'}
           </p>
         </div>
 
