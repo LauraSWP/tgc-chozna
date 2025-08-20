@@ -3,6 +3,8 @@ import { getUser, getUserProfile } from '@/lib/auth';
 import { createClient } from '@/lib/auth';
 import { validateInput, adminCardCreateSchema } from '@/lib/validate';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const user = await getUser();

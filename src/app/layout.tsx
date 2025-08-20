@@ -16,11 +16,12 @@ export const metadata: Metadata = {
     type: 'website',
   },
   manifest: '/manifest.webmanifest',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

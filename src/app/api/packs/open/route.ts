@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 import { validateInput, packOpenSchema } from '@/lib/validate';
 
 export async function POST(req: NextRequest) {
