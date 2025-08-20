@@ -448,8 +448,8 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                         name: form.name || 'Card Name',
                         typeLine: form.type_line || 'Type — Subtype',
                         manaCost: form.mana_cost,
-                        power: form.power,
-                        toughness: form.toughness,
+                        power: form.power ?? undefined,
+                        toughness: form.toughness ?? undefined,
                         keywords: form.keywords,
                         flavorText: form.flavor_text,
                         rarity: rarities.find(r => r.id === form.rarity_id)?.code as any || 'common'
