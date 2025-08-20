@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface MagicCardProps {
   name: string;
@@ -12,13 +12,37 @@ interface MagicCardProps {
   flavorText?: string;
   size?: 'small' | 'medium' | 'large';
   className?: string;
+  onClick?: () => void;
 }
 
+// Colores por tipo de carta (como Magic)
+const typeColors = {
+  // Básicos
+  'Criatura': 'from-green-700 via-green-600 to-green-800',
+  'Instantáneo': 'from-blue-700 via-blue-600 to-blue-800', 
+  'Conjuro': 'from-red-700 via-red-600 to-red-800',
+  'Encantamiento': 'from-white-600 via-white-500 to-white-700',
+  'Artefacto': 'from-gray-600 via-gray-500 to-gray-700',
+  'Tierra': 'from-brown-600 via-amber-600 to-yellow-700',
+  'Planeswalker': 'from-purple-700 via-purple-600 to-purple-800',
+  
+  // Magic colors
+  'Creature': 'from-green-700 via-green-600 to-green-800',
+  'Instant': 'from-blue-700 via-blue-600 to-blue-800',
+  'Sorcery': 'from-red-700 via-red-600 to-red-800',
+  'Enchantment': 'from-white-600 via-white-500 to-white-700',
+  'Artifact': 'from-gray-600 via-gray-500 to-gray-700',
+  'Land': 'from-brown-600 via-amber-600 to-yellow-700',
+  
+  // Default
+  'default': 'from-gray-700 via-gray-600 to-gray-800'
+};
+
 const rarityColors = {
-  common: '#000000',
-  uncommon: '#C0C0C0', 
-  rare: '#FFD700',
-  mythic: '#FF8C00'
+  common: '#6B7280',
+  uncommon: '#10B981', 
+  rare: '#3B82F6',
+  mythic: '#F59E0B'
 };
 
 const raritySymbols = {
@@ -39,8 +63,10 @@ export default function MagicCard({
   rulesText, 
   flavorText,
   size = 'medium',
-  className = ''
+  className = '',
+  onClick
 }: MagicCardProps) {
+  const [isZoomed, setIsZoomed] = useState(false);
   const sizeClasses = {
     small: 'w-32 h-44',
     medium: 'w-48 h-64',
@@ -53,10 +79,63 @@ export default function MagicCard({
     large: { name: 'text-base', type: 'text-sm', rules: 'text-sm', pt: 'text-base' }
   };
 
+  // Obtener color específico del tipo
+  const getTypeColor = (cardType: string) => {
+    const typeKey = Object.keys(typeColors).find(key => 
+      cardType.toLowerCase().includes(key.toLowerCase())
+    );
+    return typeColors[typeKey as keyof typeof typeColors] || typeColors.default;
+  };
+
+  const handleCardClick = () => {
+    setIsZoomed(true);
+    if (onClick) onClick();
+  };
+
+  const handleCloseZoom = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsZoomed(false);
+  };
+
   return (
-    <div className={`${sizeClasses[size]} ${className} relative transform transition-all duration-200 hover:scale-105 hover:shadow-xl cursor-pointer`}>
+    <>
+      {/* Modal de Zoom */}
+      {isZoomed && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+          onClick={handleCloseZoom}
+        >
+          <div className="relative max-w-md max-h-screen">
+            <MagicCard
+              name={name}
+              manaCost={manaCost}
+              type={type}
+              power={power}
+              toughness={toughness}
+              rarity={rarity}
+              artwork={artwork}
+              rulesText={rulesText}
+              flavorText={flavorText}
+              size="large"
+              className="shadow-2xl"
+            />
+            <button
+              className="absolute -top-10 -right-10 text-white text-2xl hover:text-red-400"
+              onClick={handleCloseZoom}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Carta Normal */}
+    <div 
+      className={`${sizeClasses[size]} ${className} relative transform transition-all duration-200 hover:scale-105 hover:shadow-xl cursor-pointer`}
+      onClick={handleCardClick}
+    >
       {/* Card Frame */}
-      <div className="w-full h-full rounded-lg overflow-hidden shadow-lg border-2 border-gray-800 bg-gradient-to-b from-gray-100 to-gray-200 relative">
+      <div className={`w-full h-full rounded-lg overflow-hidden shadow-lg border-2 border-gray-800 bg-gradient-to-b ${getTypeColor(type)} relative`}>
         
         {/* Header */}
         <div className="relative bg-gradient-to-r from-gray-200 to-gray-300 px-2 py-1 border-b border-gray-400">
@@ -134,5 +213,6 @@ export default function MagicCard({
         />
       </div>
     </div>
+    </>
   );
 }

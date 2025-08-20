@@ -66,10 +66,10 @@ export default function HomePage() {
               {/* Logo/Title */}
               <div className="mb-8">
                 <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 bg-clip-text text-transparent mb-4">
-                  🃏 TCG Chetado
+                  🃏 Skibidi TCG
                 </h1>
                 <p className="text-xl text-gray-300 max-w-xl">
-                  Construye mazos épicos, domina estrategias complejas y compite con los mejores jugadores de España.
+                  El juego de cartas más cabra de todas las cabras, como si una cabra hubiera tenido una cabra pero más cabra aún.
                 </p>
               </div>
 
@@ -113,7 +113,7 @@ export default function HomePage() {
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
                 {/* Imagen de Dragonite "¡Por España!" */}
-                <div className="w-80 h-80 rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl">
+                <div className="w-96 h-96 lg:w-[500px] lg:h-[500px] rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl">
                   <img 
                     src="/assets/images/españa.jpeg" 
                     alt="¡Por España! Dragonite" 
@@ -276,7 +276,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h4 className="font-bold text-xl text-white mb-4">🃏 TCG Chetado</h4>
+              <h4 className="font-bold text-xl text-white mb-4">🃏 Skibidi TCG</h4>
               <p className="text-gray-400 text-sm">
                 El TCG más emocionante de España, con estrategia profunda y diversión garantizada.
               </p>
@@ -307,7 +307,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
-            <p>&copy; 2024 TCG Chetado. Hecho con ❤️ en España.</p>
+            <p>&copy; 2024 Skibidi TCG. Hecho con ❤️ en España.</p>
           </div>
         </div>
       </footer>
