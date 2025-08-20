@@ -189,7 +189,7 @@ export default async function DashboardPage() {
                   {Object.entries(collectionStats.byRarity).map(([rarity, count]) => (
                     <div key={rarity} className="flex justify-between text-sm">
                       <span className="capitalize">{rarity}:</span>
-                      <span className="font-mono">{formatNumber(count)}</span>
+                      <span className="font-mono">{formatNumber(count as number)}</span>
                     </div>
                   ))}
                 </div>
