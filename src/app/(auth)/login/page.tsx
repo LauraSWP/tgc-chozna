@@ -106,21 +106,38 @@ export default function LoginPage() {
             data: {
               username,
             },
+            emailRedirectTo: `${window.location.origin}/auth/callback`
           },
         });
 
         if (error) throw error;
 
         if (data.user) {
-          // Update profile with username
-          await supabase
-            .from('profiles')
-            .upsert({
-              id: data.user.id,
-              username,
-            });
+          // Si el email ya está confirmado (desarrollo local), crear perfil inmediatamente
+          if (data.user.email_confirmed_at) {
+            try {
+              await supabase
+                .from('profiles')
+                .upsert({
+                  id: data.user.id,
+                  username,
+                  email: data.user.email,
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString()
+                }, {
+                  onConflict: 'id'
+                });
 
-          router.push('/dashboard');
+              router.push('/dashboard');
+            } catch (profileError) {
+              console.error('Error creating profile:', profileError);
+              // Continuar al dashboard de todas formas
+              router.push('/dashboard');
+            }
+          } else {
+            // Mostrar mensaje de confirmación de email
+            setError('¡Cuenta creada! Revisa tu email para confirmar la cuenta.');
+          }
         }
       }
     } catch (error: any) {
