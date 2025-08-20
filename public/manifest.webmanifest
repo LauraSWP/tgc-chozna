@@ -1,114 +1,70 @@
 {
-  "name": "My TCG - Trading Card Game",
-  "short_name": "My TCG",
-  "description": "A modern web-based trading card game with deck building and strategic gameplay",
+  "name": "TCG Chetado - Trading Card Game",
+  "short_name": "TCG Chetado",
+  "description": "El TCG más cachondo de España con estrategia profunda y diversión garantizada",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "background_color": "#0f172a",
+  "theme_color": "#dc2626",
   "orientation": "portrait-primary",
   "categories": ["games", "entertainment"],
-  "lang": "en",
+  "lang": "es",
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
-      "name": "Open Pack",
-      "short_name": "Shop",
-      "description": "Open booster packs",
+      "name": "Tienda",
+      "short_name": "Sobres",
+      "description": "Abrir sobres de cartas",
       "url": "/shop",
       "icons": [
         {
-          "src": "/icons/icon-96x96.png",
-          "sizes": "96x96"
+          "src": "/icons/icon-144x144.svg",
+          "sizes": "144x144"
         }
       ]
     },
     {
-      "name": "Deck Builder",
-      "short_name": "Decks",
-      "description": "Build and manage decks",
-      "url": "/decks",
+      "name": "Constructor",
+      "short_name": "Mazos",
+      "description": "Construir y gestionar mazos",
+      "url": "/dashboard",
       "icons": [
         {
-          "src": "/icons/icon-96x96.png",
-          "sizes": "96x96"
+          "src": "/icons/icon-144x144.svg",
+          "sizes": "144x144"
         }
       ]
     },
     {
-      "name": "Play Match",
-      "short_name": "Play",
-      "description": "Find opponents and play",
-      "url": "/play",
+      "name": "Jugar",
+      "short_name": "Partida",
+      "description": "Buscar oponentes y jugar",
+      "url": "/dashboard",
       "icons": [
         {
-          "src": "/icons/icon-96x96.png",
-          "sizes": "96x96"
+          "src": "/icons/icon-144x144.svg",
+          "sizes": "144x144"
         }
       ]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/desktop-1.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/screenshots/mobile-1.png",
-      "sizes": "360x640",
-      "type": "image/png",
-      "form_factor": "narrow"
     }
   ]
 }

@@ -1,337 +1,313 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
+import MagicCard from '@/components/MagicCard';
 
 export default function HomePage() {
+  // Cartas de ejemplo para mostrar
+  const featuredCards = [
+    {
+      name: "Dragón de Fuego",
+      manaCost: "4RR",
+      type: "Criatura — Dragón",
+      power: 5,
+      toughness: 4,
+      rarity: "rare" as const,
+      rulesText: "Vuela, prisa. Cuando el Dragón de Fuego entra al campo de batalla, hace 2 puntos de daño a cualquier objetivo.",
+      flavorText: "Su rugido hace temblar montañas."
+    },
+    {
+      name: "Guerrero Élfico",
+      manaCost: "1G",
+      type: "Criatura — Elfo Guerrero",
+      power: 2,
+      toughness: 2,
+      rarity: "uncommon" as const,
+      rulesText: "Vigilancia. Siempre que el Guerrero Élfico ataque, puedes poner un contador +1/+1 sobre él.",
+      flavorText: "La naturaleza guía su espada."
+    },
+    {
+      name: "Relámpago",
+      manaCost: "R",
+      type: "Instantáneo",
+      rarity: "common" as const,
+      rulesText: "El Relámpago hace 3 puntos de daño a cualquier objetivo.",
+      flavorText: "La magia más simple es a menudo la más efectiva."
+    },
+    {
+      name: "Ángel Guardián",
+      manaCost: "3WW",
+      type: "Criatura — Ángel",
+      power: 3,
+      toughness: 4,
+      rarity: "mythic" as const,
+      rulesText: "Vuela, vigilancia. Las otras criaturas que controlas tienen +1/+1 y vigilancia.",
+      flavorText: "Su presencia trae esperanza a los corazones más oscuros."
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50 dark:from-gray-900 dark:to-red-900">
-      {/* Header */}
-      <header className="border-b bg-white/50 backdrop-blur-sm dark:bg-gray-900/50 sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-yellow-600 bg-clip-text text-transparent">
-              🃏 TCG Chetado
-            </h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Entrar</Link>
-            </Button>
-            <Button asChild className="bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-600 hover:to-yellow-600">
-              <Link href="/login">Ser Pro</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900">
       {/* Hero Section */}
-      <section className="py-20 text-center">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-6xl font-bold mb-6 bg-gradient-to-r from-red-600 to-yellow-600 bg-clip-text text-transparent">
-            ¡VAYA JUEGAZO! 🔥
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            El TCG más cachondo de España. Abre sobres, monta mazos épicos, 
-            y compite con tus colegas usando cartas con humor español auténtico.
-          </p>
-          <div className="text-lg mb-6 space-y-2">
-            <div>🇪🇸 100% Español de Verdad 🇪🇸</div>
-            <div>😂 Humor Sin Censura 😂</div>
-            <div>🃏 Cartas de Infarto 🃏</div>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild className="bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-600 hover:to-yellow-600 text-lg">
-              <Link href="/login">¡EMPEZAR A JUGAR!</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild className="border-red-500 text-red-600 hover:bg-red-50">
-              <Link href="#features">Ver las Cartas</Link>
-            </Button>
-          </div>
+      <section className="relative py-20 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" 
+               style={{
+                 backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+               }}
+          />
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-20 bg-white/30 dark:bg-gray-800/30">
+        
         <div className="container mx-auto px-4">
-          <h3 className="text-4xl font-bold text-center mb-12">🔥 CARACTERÍSTICAS ÉPICAS 🔥</h3>
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="text-center border-2 border-red-200 hover:border-red-400 transition-colors">
-              <CardHeader>
-                <div className="text-6xl mb-4">📦</div>
-                <CardTitle className="text-red-600">Sobres Chetados</CardTitle>
-                <CardDescription>
-                  Abre sobres con humor español auténtico
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Cada sobre viene con cartas temáticas españolas: El Tío de la Vara, 
-                  La Siesta Imparable, y otras que harán las partidas cachondas.
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Content */}
+            <div className="text-center lg:text-left">
+              {/* Logo/Title */}
+              <div className="mb-8">
+                <h1 className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 bg-clip-text text-transparent mb-4">
+                  🃏 TCG Chetado
+                </h1>
+                <p className="text-xl text-gray-300 max-w-xl">
+                  Construye mazos épicos, domina estrategias complejas y compite con los mejores jugadores de España.
                 </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center border-2 border-yellow-200 hover:border-yellow-400 transition-colors">
-              <CardHeader>
-                <div className="text-6xl mb-4">⚔️</div>
-                <CardTitle className="text-yellow-600">Batallas Intensas</CardTitle>
-                <CardDescription>
-                  Combate con humor negro incluido
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Sistema de combate estratégico con cartas de efectos únicos, 
-                  vaciles épicos y humor que solo entenderán tus colegas.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center border-2 border-green-200 hover:border-green-400 transition-colors">
-              <CardHeader>
-                <div className="text-6xl mb-4">🛠️</div>
-                <CardTitle className="text-green-600">Constructor Pro</CardTitle>
-                <CardDescription>
-                  Arma mazos de pura maldad
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Construye mazos temáticos: "La Cuadrilla", "Humor de Bar", 
-                  "Vaciles Clásicos", y más categorías para crear estrategias únicas.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Card Preview */}
-      <section className="py-20 bg-gradient-to-r from-red-100 to-yellow-100 dark:from-gray-800 dark:to-red-800">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-4xl font-bold mb-12">🃏 CARTAS DISPONIBLES 🃏</h3>
-          <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            <Card className="bg-gradient-to-b from-blue-200 to-blue-300 border-2 border-blue-400">
-              <CardHeader className="pb-2">
-                <div className="text-3xl">⚔️</div>
-                <CardTitle className="text-sm">Guerrero Arcano</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="text-xs">Poder: 4/3</div>
-                <div className="text-xs mt-1">Habilidad: Contraataque</div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-b from-green-200 to-green-300 border-2 border-green-400">
-              <CardHeader className="pb-2">
-                <div className="text-3xl">🌿</div>
-                <CardTitle className="text-sm">Druida Ancestral</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="text-xs">Poder: 2/5</div>
-                <div className="text-xs mt-1">Habilidad: Regeneración</div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-b from-purple-200 to-purple-300 border-2 border-purple-400">
-              <CardHeader className="pb-2">
-                <div className="text-3xl">🔮</div>
-                <CardTitle className="text-sm">Mago Sombrio</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="text-xs">Poder: 3/2</div>
-                <div className="text-xs mt-1">Habilidad: Drenar Vida</div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-b from-red-200 to-red-300 border-2 border-red-400">
-              <CardHeader className="pb-2">
-                <div className="text-3xl">🔥</div>
-                <CardTitle className="text-sm">Dragón de Fuego</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="text-xs">Poder: 7/5</div>
-                <div className="text-xs mt-1">Habilidad: Vuelo, Prisa</div>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="mt-8">
-            <h4 className="text-2xl font-bold mb-4 text-red-600">Tipos de Cartas</h4>
-            <div className="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto text-sm">
-              <div className="bg-white/50 p-3 rounded">
-                <strong>⚔️ Criaturas:</strong> Guerreros, Magos, Dragones, Bestias
               </div>
-              <div className="bg-white/50 p-3 rounded">
-                <strong>✨ Hechizos:</strong> Instantáneos, Encantamientos, Artefactos
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-6 mb-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-yellow-400">500+</div>
+                  <div className="text-sm text-gray-400">Cartas Únicas</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-400">1K+</div>
+                  <div className="text-sm text-gray-400">Jugadores</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-400">24/7</div>
+                  <div className="text-sm text-gray-400">Online</div>
+                </div>
               </div>
-              <div className="bg-white/50 p-3 rounded">
-                <strong>🏔️ Tierras:</strong> Generan maná para jugar otras cartas
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button 
+                  size="lg" 
+                  asChild 
+                  className="bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 text-white font-bold px-8 py-4 rounded-xl text-lg shadow-xl transform transition hover:scale-105"
+                >
+                  <Link href="/login">¡Empezar a Jugar!</Link>
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  asChild
+                  className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl text-lg backdrop-blur-sm"
+                >
+                  <Link href="#cards">Ver Cartas</Link>
+                </Button>
+              </div>
+            </div>
+
+            {/* Right side - Hero Image */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Imagen de Dragonite "¡Por España!" */}
+                <div className="w-80 h-80 rounded-full overflow-hidden border-4 border-yellow-400 shadow-2xl">
+                  <img 
+                    src="/assets/images/españa.jpeg" 
+                    alt="¡Por España! Dragonite" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {/* Glowing effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-red-400 via-yellow-500 to-red-600 rounded-full opacity-20 blur-xl scale-110"></div>
+                {/* Spanish flag colors glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-yellow-400 rounded-full opacity-10 blur-2xl scale-125"></div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Game Modes Section */}
-      <section className="py-20">
+      {/* Featured Cards Section */}
+      <section id="cards" className="py-20 bg-black/20 backdrop-blur-sm">
         <div className="container mx-auto px-4">
-          <h3 className="text-4xl font-bold text-center mb-12">🎮 MODOS DE JUEGO 🎮</h3>
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="border-2 border-red-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-red-600">
-                  <span className="text-3xl">🏆</span>
-                  Ranked
-                </CardTitle>
-                <CardDescription>
-                  Compite por subir en las clasificaciones
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside space-y-2 text-sm">
-                  <li>Sistema de emparejamiento por habilidad</li>
-                  <li>Temporadas con recompensas exclusivas</li>
-                  <li>Múltiples formatos competitivos</li>
-                  <li>Torneos mensuales</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-yellow-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-yellow-600">
-                  <span className="text-3xl">🎯</span>
-                  Casual
-                </CardTitle>
-                <CardDescription>
-                  Juega sin presión de ranking
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside space-y-2 text-sm">
-                  <li>Partidas relajadas con amigos</li>
-                  <li>Práctica contra IA avanzada</li>
-                  <li>Modo sandbox para probar mazos</li>
-                  <li>Eventos semanales especiales</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-green-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-green-600">
-                  <span className="text-3xl">⚔️</span>
-                  Draft
-                </CardTitle>
-                <CardDescription>
-                  Construye tu mazo sobre la marcha
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="list-disc list-inside space-y-2 text-sm">
-                  <li>Escoge cartas de sobres aleatorios</li>
-                  <li>Estrategia adaptativa en tiempo real</li>
-                  <li>Recompensas basadas en victorias</li>
-                  <li>Nuevos draft cada semana</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-r from-red-600 to-yellow-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-4xl font-bold mb-12">🔥 ÚNETE AL CAOS 🔥</h3>
-          <div className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            <div>
-              <div className="text-4xl font-bold mb-2">420</div>
-              <div className="text-red-100">Cartas Épicas</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">69</div>
-              <div className="text-red-100">Jugadores Pro</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">1337</div>
-              <div className="text-red-100">Roasts Brutales</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">∞</div>
-              <div className="text-red-100">Nivel de Troleo</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto">
-            <h3 className="text-4xl font-bold mb-6">¿Listo para la diversión total? 🎮</h3>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
-              Únete a la comunidad de TCG más divertida en español. 
-              ¡Crea tu cuenta y recibe tu starter pack con memes épicos gratis!
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">Cartas Destacadas</h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Descubre algunas de las cartas más poderosas en nuestro arsenal. 
+              Cada carta ha sido diseñada con estrategia y balance en mente.
             </p>
-            <div className="text-2xl mb-6">
-              🎮 GRATIS Y SIN LÍMITES 🎮
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
+            {featuredCards.map((card, index) => (
+              <MagicCard
+                key={index}
+                name={card.name}
+                manaCost={card.manaCost}
+                type={card.type}
+                power={card.power}
+                toughness={card.toughness}
+                rarity={card.rarity}
+                rulesText={card.rulesText}
+                flavorText={card.flavorText}
+                size="medium"
+                className="transform transition-all duration-300 hover:scale-110 hover:z-10"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Game Features */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-3 gap-8">
+            <Card className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border-blue-500/30 backdrop-blur-sm">
+              <CardContent className="p-8 text-center">
+                <div className="text-4xl mb-4">⚔️</div>
+                <h3 className="text-2xl font-bold text-white mb-4">Combate Estratégico</h3>
+                <p className="text-gray-300">
+                  Sistema de combate profundo con fases, stack de efectos e interacciones complejas.
+                  Domina el timing perfecto para ganar.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/30 backdrop-blur-sm">
+              <CardContent className="p-8 text-center">
+                <div className="text-4xl mb-4">🏗️</div>
+                <h3 className="text-2xl font-bold text-white mb-4">Constructor de Mazos</h3>
+                <p className="text-gray-300">
+                  Crea mazos únicos con nuestro constructor avanzado. Analiza curvas de maná, 
+                  sinergias y estadísticas detalladas.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-green-900/50 to-blue-900/50 border-green-500/30 backdrop-blur-sm">
+              <CardContent className="p-8 text-center">
+                <div className="text-4xl mb-4">🏆</div>
+                <h3 className="text-2xl font-bold text-white mb-4">Competición</h3>
+                <p className="text-gray-300">
+                  Participa en torneos ranked, eventos especiales y desafíos semanales.
+                  Escala hasta convertirte en leyenda.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Game Modes */}
+      <section className="py-20 bg-black/20 backdrop-blur-sm">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">Modos de Juego</h2>
+            <p className="text-xl text-gray-300">Elige tu estilo de juego favorito</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="bg-gradient-to-br from-yellow-500 to-orange-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl text-white mx-auto mb-4">
+                🏆
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Ranked</h3>
+              <p className="text-gray-400">Compite por subir en las clasificaciones globales</p>
             </div>
+            <div className="text-center">
+              <div className="bg-gradient-to-br from-blue-500 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl text-white mx-auto mb-4">
+                🎯
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Casual</h3>
+              <p className="text-gray-400">Juega sin presión con amigos y la comunidad</p>
+            </div>
+            <div className="text-center">
+              <div className="bg-gradient-to-br from-green-500 to-teal-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl text-white mx-auto mb-4">
+                📦
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Draft</h3>
+              <p className="text-gray-400">Construye mazos sobre la marcha con sobres aleatorios</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+              ¿Listo para la Batalla?
+            </h2>
+            <p className="text-xl text-gray-300 mb-8">
+              Únete a miles de jugadores en el TCG más emocionante. 
+              Construye tu colección, perfecciona tus estrategias y domina el campo de batalla.
+            </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild className="bg-gradient-to-r from-red-500 to-yellow-500 hover:from-red-600 hover:to-yellow-600 text-lg">
-                <Link href="/login">¡CREAR CUENTA YA!</Link>
+              <Button 
+                size="lg" 
+                asChild 
+                className="bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 text-white font-bold px-12 py-6 rounded-xl text-xl shadow-xl"
+              >
+                <Link href="/login">Crear Cuenta Gratis</Link>
               </Button>
-              <Button size="lg" variant="outline" asChild className="border-red-500 text-red-600 hover:bg-red-50">
-                <Link href="/login">Ya tengo cuenta</Link>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                asChild
+                className="border-2 border-white/30 text-white hover:bg-white/10 px-12 py-6 rounded-xl text-xl backdrop-blur-sm"
+              >
+                <Link href="/login">Iniciar Sesión</Link>
               </Button>
             </div>
             <p className="text-sm text-gray-500 mt-4">
-              Gratis para siempre • Sin complicaciones • Contenido épico garantizado
+              100% gratis • Sin descargas • Juega en tu navegador
             </p>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-red-50 dark:bg-gray-900 py-12">
+      <footer className="bg-black/50 backdrop-blur-sm py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h4 className="font-bold mb-4 bg-gradient-to-r from-red-600 to-yellow-600 bg-clip-text text-transparent">
-                🃏 TCG Chetado
-              </h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                El TCG más divertido de Latinoamérica, con humor único entre amigos.
+              <h4 className="font-bold text-xl text-white mb-4">🃏 TCG Chetado</h4>
+              <p className="text-gray-400 text-sm">
+                El TCG más emocionante de España, con estrategia profunda y diversión garantizada.
               </p>
             </div>
             <div>
-              <h5 className="font-semibold mb-4">Juego</h5>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/login" className="text-gray-600 hover:text-red-600">Jugar Ahora</Link></li>
-                <li><Link href="#features" className="text-gray-600 hover:text-red-600">Cartas Épicas</Link></li>
-                <li><Link href="/login" className="text-gray-600 hover:text-red-600">Rankings</Link></li>
+              <h5 className="font-semibold text-white mb-4">Juego</h5>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="/login" className="hover:text-white transition">Jugar Ahora</Link></li>
+                <li><Link href="#cards" className="hover:text-white transition">Cartas</Link></li>
+                <li><a href="#" className="hover:text-white transition">Reglas</a></li>
               </ul>
             </div>
             <div>
-              <h5 className="font-semibold mb-4">Comunidad</h5>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-gray-600 hover:text-red-600">Discord Chetado</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-red-600">Reddit Brainrot</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-red-600">Telegram Troleo</a></li>
+              <h5 className="font-semibold text-white mb-4">Comunidad</h5>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition">Discord</a></li>
+                <li><a href="#" className="hover:text-white transition">Reddit</a></li>
+                <li><a href="#" className="hover:text-white transition">Twitter</a></li>
               </ul>
             </div>
             <div>
-              <h5 className="font-semibold mb-4">Soporte</h5>
-              <ul className="space-y-2 text-sm">
-                <li><a href="#" className="text-gray-600 hover:text-red-600">Centro de Ayuda</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-red-600">Contacto</a></li>
-                <li><a href="#" className="text-gray-600 hover:text-red-600">Reportar Bugs</a></li>
+              <h5 className="font-semibold text-white mb-4">Soporte</h5>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition">Ayuda</a></li>
+                <li><a href="#" className="hover:text-white transition">Contacto</a></li>
+                <li><a href="#" className="hover:text-white transition">Bug Reports</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t mt-8 pt-8 text-center text-sm text-gray-600 dark:text-gray-300">
-            <p>&copy; 2024 TCG Chetado. Construido para panas que entienden el humor sin filtro.</p>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+            <p>&copy; 2024 TCG Chetado. Hecho con ❤️ en España.</p>
           </div>
         </div>
       </footer>
