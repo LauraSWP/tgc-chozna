@@ -121,7 +121,6 @@ export default function LoginPage() {
                 .upsert({
                   id: data.user.id,
                   username,
-                  email: data.user.email,
                   created_at: new Date().toISOString(),
                   updated_at: new Date().toISOString()
                 }, {

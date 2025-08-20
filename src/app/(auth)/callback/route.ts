@@ -23,7 +23,6 @@ export async function GET(request: NextRequest) {
           .upsert({
             id: data.user.id,
             username: data.user.user_metadata?.username || 'Usuario',
-            email: data.user.email,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }, {
