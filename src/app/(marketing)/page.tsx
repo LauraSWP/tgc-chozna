@@ -225,35 +225,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Game Modes */}
+      {/* Card Types */}
       <section className="py-20 bg-black/20 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Modos de Juego</h2>
-            <p className="text-xl text-gray-300">Elige tu estilo de juego favorito</p>
+            <h2 className="text-4xl font-bold text-white mb-4">Tipos de Cartas</h2>
+            <p className="text-xl text-gray-300">Lo básico que necesitas saber</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="bg-gradient-to-br from-yellow-500 to-orange-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl text-white mx-auto mb-4">
-                🏆
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Ranked</h3>
-              <p className="text-gray-400">Compite por subir en las clasificaciones globales</p>
+              <div className="text-4xl mb-2">🐉</div>
+              <h3 className="text-lg font-bold text-white mb-2">Criaturas</h3>
+              <p className="text-gray-400 text-sm">Atacan y defienden</p>
             </div>
             <div className="text-center">
-              <div className="bg-gradient-to-br from-blue-500 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl text-white mx-auto mb-4">
-                🎯
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Casual</h3>
-              <p className="text-gray-400">Juega sin presión con amigos y la comunidad</p>
+              <div className="text-4xl mb-2">⚡</div>
+              <h3 className="text-lg font-bold text-white mb-2">Instantáneos</h3>
+              <p className="text-gray-400 text-sm">Se juegan al momento</p>
             </div>
             <div className="text-center">
-              <div className="bg-gradient-to-br from-green-500 to-teal-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl text-white mx-auto mb-4">
-                📦
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Draft</h3>
-              <p className="text-gray-400">Construye mazos sobre la marcha con sobres aleatorios</p>
+              <div className="text-4xl mb-2">🔮</div>
+              <h3 className="text-lg font-bold text-white mb-2">Conjuros</h3>
+              <p className="text-gray-400 text-sm">Efectos únicos</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-2">🏞️</div>
+              <h3 className="text-lg font-bold text-white mb-2">Tierras</h3>
+              <p className="text-gray-400 text-sm">Dan maná para jugar</p>
             </div>
           </div>
         </div>

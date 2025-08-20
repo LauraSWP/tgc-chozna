@@ -15,12 +15,21 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailPlaceholder, setEmailPlaceholder] = useState('staresgay@factos.com');
   const router = useRouter();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+
+    // Validación de contraseña idiota
+    if (password === '123456') {
+      setEmailPlaceholder('Te dije que no sea 123456 IMBÉCIL');
+      setError('En serio... ¿123456? ¿Esa es tu contraseña?');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       if (isLogin) {
@@ -68,34 +77,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleGuestPlay = async () => {
-    try {
-      const { data, error } = await supabase.auth.signInAnonymously();
-      
-      if (error) throw error;
-      
-      if (data.user) {
-        // Create a guest profile with Spanish brainrot names
-        const randomNames = [
-          'ElTioDeLaVara', 'Siestero', 'Coleguita', 'Machote', 'Cachondo', 
-          'Parrillero', 'Juerguista', 'Vacilón', 'ChavalinCool', 'Cañero',
-          'Madridista', 'Sevillano', 'Gallego', 'Andaluz', 'Guiri'
-        ];
-        const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
-        
-        await supabase
-          .from('profiles')
-          .upsert({
-            id: data.user.id,
-            username: `${randomName}_${data.user.id.slice(0, 4)}`,
-          });
 
-        router.push('/dashboard');
-      }
-    } catch (error: any) {
-      setError(error.message || 'Error al entrar como invitado, qué faena');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-yellow-50 dark:from-gray-900 dark:to-red-900 flex items-center justify-center p-4">
@@ -155,7 +137,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full border-2 border-red-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="tuemail@cachondeo.es"
+                  placeholder={emailPlaceholder}
                 />
               </div>
 
@@ -237,12 +219,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            {/* Fun motivational text */}
-            <div className="text-center text-xs text-gray-500 mt-4 space-y-1">
-              <p>🔥 Sin censura, sin límites 🔥</p>
-              <p>💀 100% humor negro permitido 💀</p>
-              <p>🤡 Comunidad de puro brainrot 🤡</p>
-            </div>
+
           </CardContent>
         </Card>
 
