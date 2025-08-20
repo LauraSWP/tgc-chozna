@@ -258,40 +258,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-              ¿Listo para la Batalla?
-            </h2>
-            <p className="text-xl text-gray-300 mb-8">
-              Únete a miles de jugadores en el TCG más emocionante. 
-              Construye tu colección, perfecciona tus estrategias y domina el campo de batalla.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                asChild 
-                className="bg-gradient-to-r from-yellow-500 to-red-600 hover:from-yellow-600 hover:to-red-700 text-white font-bold px-12 py-6 rounded-xl text-xl shadow-xl"
-              >
-                <Link href="/login">Crear Cuenta Gratis</Link>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                asChild
-                className="border-2 border-white/30 text-white hover:bg-white/10 px-12 py-6 rounded-xl text-xl backdrop-blur-sm"
-              >
-                <Link href="/login">Iniciar Sesión</Link>
-              </Button>
-            </div>
-            <p className="text-sm text-gray-500 mt-4">
-              100% gratis • Sin descargas • Juega en tu navegador
-            </p>
-          </div>
-        </div>
-      </section>
+
 
       {/* Footer */}
       <footer className="bg-black/50 backdrop-blur-sm py-12">
