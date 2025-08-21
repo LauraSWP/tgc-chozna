@@ -762,22 +762,27 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
             </div>
           </div>
 
-          {/* Keywords */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Keywords</label>
+          {/* Keywords Section */}
+          <div className="space-y-4 bg-green-50 p-6 rounded-lg border">
+            <h4 className="font-semibold text-lg flex items-center gap-2">
+              🏷️ Palabras Clave
+              <span className="text-xs text-gray-500 ml-2">(Habilidades especiales de la carta)</span>
+            </h4>
+            
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={keywordInput}
                 onChange={(e) => setKeywordInput(e.target.value)}
                 className="flex-1 border rounded-md px-3 py-2"
-                placeholder="flying, haste, etc."
+                placeholder="volar, prisa, vigilancia, etc."
                 onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
               />
               <Button onClick={addKeyword} type="button" variant="outline">
-                Add
+                ➕ Añadir
               </Button>
             </div>
+            
             <div className="flex flex-wrap gap-2">
               {form.keywords.map(keyword => (
                 <span
@@ -794,15 +799,22 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                 </span>
               ))}
             </div>
+            
+            <div className="text-xs text-gray-500 bg-white p-3 rounded border">
+              💡 <strong>Tip:</strong> Las palabras clave son habilidades especiales como "volar" (no puede ser bloqueada), "prisa" (puede atacar inmediatamente), etc.
+            </div>
           </div>
 
-          {/* Card Effects */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Card Effects</label>
+          {/* Card Effects Section */}
+          <div className="space-y-4 bg-red-50 p-6 rounded-lg border">
+            <h4 className="font-semibold text-lg flex items-center gap-2">
+              ⚡ Efectos de la Carta
+              <span className="text-xs text-gray-500 ml-2">(Qué hace la carta cuando se juega)</span>
+            </h4>
             
             {/* Effect Templates */}
             <div className="mb-4">
-              <h4 className="text-sm font-medium mb-2">Quick Effect Templates</h4>
+              <h5 className="text-sm font-medium mb-2">🚀 Plantillas de Efectos Rápidos</h5>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {effectTemplates.map((template, index) => (
                   <Button
@@ -829,7 +841,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                 size="sm"
                 onClick={() => addBasicEffect('draw')}
               >
-                + Draw Cards
+                + Robar Cartas
               </Button>
               <Button
                 type="button"
@@ -837,7 +849,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                 size="sm"
                 onClick={() => addBasicEffect('damage')}
               >
-                + Deal Damage
+                + Hacer Daño
               </Button>
               <Button
                 type="button"
@@ -845,7 +857,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                 size="sm"
                 onClick={() => addBasicEffect('buff')}
               >
-                + Buff Creature
+                + Potenciar Criatura
               </Button>
               <Button
                 type="button"
@@ -853,14 +865,14 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                 size="sm"
                 onClick={() => addBasicEffect('destroy')}
               >
-                + Destroy
+                + Destruir
               </Button>
             </div>
 
             {/* JSON Editor */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Advanced JSON Editor</span>
+                <span className="text-sm text-gray-600">🔧 Editor JSON Avanzado</span>
                 <Button
                   type="button"
                   variant="outline"
@@ -874,7 +886,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                     }
                   }}
                 >
-                  Format JSON
+                  📐 Formatear JSON
                 </Button>
               </div>
               <textarea
@@ -883,47 +895,61 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                 className="w-full border rounded-md px-3 py-2 font-mono text-sm h-32"
                 placeholder='{"on_play": [{"op": "draw", "count": 1, "target": "self"}]}'
               />
-              <div className="text-xs text-gray-500">
-                💡 Tip: Use templates above for quick setup, then customize in JSON editor
+              <div className="text-xs text-gray-500 bg-white p-3 rounded border">
+                💡 <strong>Tip:</strong> Usa las plantillas de arriba para configuración rápida, luego personaliza en el editor JSON
               </div>
             </div>
           </div>
 
-            </div>
-          </div>
+          {/* Flavor Text and Artist */}
+          <div className="space-y-4 bg-yellow-50 p-6 rounded-lg border">
+            <h4 className="font-semibold text-lg flex items-center gap-2">
+              📝 Texto y Créditos
+            </h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-1 text-gray-700">
+                  💬 Texto de Sabor
+                  <span className="text-xs text-gray-500 ml-2">(Frase divertida o temática)</span>
+                </label>
+                <textarea
+                  value={form.flavor_text}
+                  onChange={(e) => setForm(prev => ({ ...prev, flavor_text: e.target.value }))}
+                  className="w-full border rounded-md px-3 py-2 h-20 resize-none"
+                  placeholder="Una cita divertida o temática..."
+                />
+              </div>
 
-          {/* Flavor and Distribution */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Flavor Text</label>
-              <textarea
-                value={form.flavor_text}
-                onChange={(e) => setForm(prev => ({ ...prev, flavor_text: e.target.value }))}
-                className="w-full border rounded-md px-3 py-2 h-20 resize-none"
-                placeholder="Funny or thematic quote..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Artist</label>
-              <input
-                type="text"
-                value={form.artist}
-                onChange={(e) => setForm(prev => ({ ...prev, artist: e.target.value }))}
-                className="w-full border rounded-md px-3 py-2"
-                placeholder="Artist Name"
-              />
+              <div>
+                <label className="block text-sm font-medium mb-1 text-gray-700">
+                  🎨 Artista
+                  <span className="text-xs text-gray-500 ml-2">(Quién creó la imagen)</span>
+                </label>
+                <input
+                  type="text"
+                  value={form.artist}
+                  onChange={(e) => setForm(prev => ({ ...prev, artist: e.target.value }))}
+                  className="w-full border rounded-md px-3 py-2"
+                  placeholder="Nombre del Artista"
+                />
+              </div>
             </div>
           </div>
 
           {/* Distribution Settings */}
-          <div className="space-y-4">
-            <h3 className="font-semibold">Distribution Settings</h3>
+          <div className="space-y-4 bg-purple-50 p-6 rounded-lg border">
+            <h4 className="font-semibold text-lg flex items-center gap-2">
+              📊 Configuración de Distribución
+            </h4>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Active Status */}
               <div>
-                <label className="block text-sm font-medium mb-2">Availability</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">
+                  ✅ Disponibilidad
+                  <span className="text-xs text-gray-500 ml-2">(Si aparece en sobres y juegos)</span>
+                </label>
                 <div className="space-y-2">
                   <label className="flex items-center space-x-2">
                     <input
@@ -932,41 +958,45 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
                       onChange={(e) => setForm(prev => ({ ...prev, is_active: e.target.checked }))}
                       className="rounded"
                     />
-                    <span className="text-sm">Card is active (appears in packs and games)</span>
+                    <span className="text-sm">La carta está activa (aparece en sobres y juegos)</span>
                   </label>
                 </div>
               </div>
 
               {/* Pack Information */}
               <div>
-                <label className="block text-sm font-medium mb-2">Pack Information</label>
+                <label className="block text-sm font-medium mb-2 text-gray-700">
+                  📦 Información de Sobres
+                </label>
                 <div className="text-sm text-gray-600 space-y-1">
-                  <p>• This card will appear in <strong>{sets.find(s => s.id === form.set_id)?.name || 'selected set'}</strong> booster packs</p>
-                  <p>• Rarity: <strong>{rarities.find(r => r.id === form.rarity_id)?.display_name || 'Unknown'}</strong></p>
-                  <p>• Approximate pull rate: {getRarityPullRate(rarities.find(r => r.id === form.rarity_id)?.code)}</p>
+                  <p>• Esta carta aparecerá en sobres de <strong>{sets.find(s => s.id === form.set_id)?.name || 'colección seleccionada'}</strong></p>
+                  <p>• Rareza: <strong>{rarities.find(r => r.id === form.rarity_id)?.display_name || 'Desconocida'}</strong></p>
+                  <p>• Probabilidad aproximada: {getRarityPullRate(rarities.find(r => r.id === form.rarity_id)?.code)}</p>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions */}
             <div>
-              <label className="block text-sm font-medium mb-2">Quick Actions (After Save)</label>
+              <label className="block text-sm font-medium mb-2 text-gray-700">
+                🚀 Acciones Rápidas (Después de Guardar)
+              </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <div className="p-3 border rounded-lg text-center">
                   <div className="text-2xl mb-1">🎁</div>
-                  <div className="text-xs">Give to Users</div>
+                  <div className="text-xs">Dar a Usuarios</div>
                 </div>
                 <div className="p-3 border rounded-lg text-center">
                   <div className="text-2xl mb-1">📦</div>
-                  <div className="text-xs">Add to Packs</div>
+                  <div className="text-xs">Añadir a Sobres</div>
                 </div>
                 <div className="p-3 border rounded-lg text-center">
                   <div className="text-2xl mb-1">🏗️</div>
-                  <div className="text-xs">Create Deck</div>
+                  <div className="text-xs">Crear Mazo</div>
                 </div>
                 <div className="p-3 border rounded-lg text-center">
                   <div className="text-2xl mb-1">🔧</div>
-                  <div className="text-xs">Test Effects</div>
+                  <div className="text-xs">Probar Efectos</div>
                 </div>
               </div>
             </div>
@@ -975,7 +1005,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
           {/* Errors */}
           {errors.length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <h4 className="font-semibold text-red-800 mb-2">Errors:</h4>
+              <h4 className="font-semibold text-red-800 mb-2">⚠️ Errores:</h4>
               <ul className="text-red-700 text-sm space-y-1">
                 {errors.map((error, index) => (
                   <li key={index}>• {error}</li>
@@ -985,21 +1015,22 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
           )}
 
           {/* Actions */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 pt-4">
             <Button
               onClick={handleSave}
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 text-lg py-3"
             >
-              {isLoading ? 'Saving...' : (cardId ? 'Update Card' : 'Create Card')}
+              {isLoading ? '⏳ Guardando...' : (cardId ? '💾 Actualizar Carta' : '🚀 Crear Carta')}
             </Button>
             
             <Button
               onClick={onCancel || (() => router.back())}
               variant="outline"
               disabled={isLoading}
+              className="px-8 py-3"
             >
-              Cancel
+              ❌ Cancelar
             </Button>
           </div>
         </CardContent>
