@@ -63,6 +63,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [manaCostBuilder, setManaCostBuilder] = useState<string[]>([]);
 
   useEffect(() => {
     loadReferenceData();
@@ -70,6 +71,38 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
       loadCard();
     }
   }, [cardId]);
+
+  useEffect(() => {
+    // Parse existing mana cost into builder array
+    if (form.mana_cost) {
+      const symbols = form.mana_cost.match(/\{[^}]+\}/g) || [];
+      setManaCostBuilder(symbols.map(s => s.slice(1, -1)));
+    }
+  }, [form.mana_cost]);
+
+  // Mana cost builder functions
+  const addManaSymbol = (symbol: string) => {
+    const newCost = [...manaCostBuilder, symbol];
+    setManaCostBuilder(newCost);
+    setForm(prev => ({ 
+      ...prev, 
+      mana_cost: newCost.map(s => `{${s}}`).join('') 
+    }));
+  };
+
+  const removeManaSymbol = (index: number) => {
+    const newCost = manaCostBuilder.filter((_, i) => i !== index);
+    setManaCostBuilder(newCost);
+    setForm(prev => ({ 
+      ...prev, 
+      mana_cost: newCost.map(s => `{${s}}`).join('') 
+    }));
+  };
+
+  const clearManaCost = () => {
+    setManaCostBuilder([]);
+    setForm(prev => ({ ...prev, mana_cost: '' }));
+  };
 
   const loadReferenceData = async () => {
     try {
@@ -282,66 +315,83 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
   };
 
   const frameStyles = [
-    { value: 'classic', label: 'Classic', preview: '🖼️ Traditional card frame' },
-    { value: 'modern', label: 'Modern', preview: '✨ Sleek modern design' },
-    { value: 'vintage', label: 'Vintage', preview: '📜 Old-school style' },
-    { value: 'digital', label: 'Digital', preview: '💾 Cyber theme' },
-    { value: 'mystical', label: 'Mystical', preview: '🌟 Magical effects' },
-    { value: 'industrial', label: 'Industrial', preview: '⚙️ Tech/metal theme' },
+    { value: 'classic', label: 'Clásico', preview: '🖼️ Marco tradicional de carta' },
+    { value: 'modern', label: 'Moderno', preview: '✨ Diseño moderno y elegante' },
+    { value: 'vintage', label: 'Vintage', preview: '📜 Estilo retro' },
+    { value: 'digital', label: 'Digital', preview: '💾 Tema cibernético' },
+    { value: 'mystical', label: 'Místico', preview: '🌟 Efectos mágicos' },
+    { value: 'industrial', label: 'Industrial', preview: '⚙️ Tema tecnológico/metal' },
+  ];
+
+  const manaSymbols = [
+    { symbol: '0', color: 'bg-gray-300', label: 'Cero' },
+    { symbol: '1', color: 'bg-gray-300', label: 'Uno' },
+    { symbol: '2', color: 'bg-gray-300', label: 'Dos' },
+    { symbol: '3', color: 'bg-gray-300', label: 'Tres' },
+    { symbol: '4', color: 'bg-gray-300', label: 'Cuatro' },
+    { symbol: '5', color: 'bg-gray-300', label: 'Cinco' },
+    { symbol: '6', color: 'bg-gray-300', label: 'Seis' },
+    { symbol: 'X', color: 'bg-gray-400', label: 'Variable' },
+    { symbol: 'W', color: 'bg-yellow-200', label: 'Blanco' },
+    { symbol: 'U', color: 'bg-blue-200', label: 'Azul' },
+    { symbol: 'B', color: 'bg-gray-800', label: 'Negro' },
+    { symbol: 'R', color: 'bg-red-200', label: 'Rojo' },
+    { symbol: 'G', color: 'bg-green-200', label: 'Verde' },
+    { symbol: 'C', color: 'bg-gray-200', label: 'Incoloro' },
   ];
 
   const effectTemplates = [
     {
-      name: 'Card Draw',
-      description: 'Draw cards when played',
+      name: 'Robar Cartas',
+      description: 'Roba cartas al jugarse',
       template: { on_play: [{ op: 'draw', count: 1, target: 'self' }] }
     },
     {
-      name: 'Direct Damage',
-      description: 'Deal damage to any target',
+      name: 'Daño Directo',
+      description: 'Hace daño a cualquier objetivo',
       template: { on_play: [{ op: 'damage', amount: 2, target: 'any' }] }
     },
     {
-      name: 'Creature Buff',
-      description: 'Boost creature stats',
+      name: 'Potenciar Criatura',
+      description: 'Mejora las estadísticas de criatura',
       template: { on_play: [{ op: 'buff', power: 1, toughness: 1, until: 'end_of_turn', selector: 'target_creature' }] }
     },
     {
-      name: 'Destroy Effect',
-      description: 'Destroy target permanent',
+      name: 'Destruir',
+      description: 'Destruye permanente objetivo',
       template: { on_play: [{ op: 'destroy', selector: 'target_creature' }] }
     },
     {
-      name: 'Enter Trigger',
-      description: 'Effect when creature enters',
+      name: 'Al Entrar',
+      description: 'Efecto cuando la criatura entra',
       template: { on_enter: [{ op: 'draw', count: 1, target: 'self' }] }
     },
     {
-      name: 'Activated Ability',
-      description: 'Pay cost to activate',
+      name: 'Habilidad Activada',
+      description: 'Paga un coste para activar',
       template: { activated: [{ cost: '{1}, {T}', effects: [{ op: 'draw', count: 1, target: 'self' }] }] }
     },
     {
-      name: 'Death Trigger',
-      description: 'Effect when dies',
+      name: 'Al Morir',
+      description: 'Efecto cuando muere',
       template: { on_death: [{ op: 'damage', amount: 2, target: 'any' }] }
     },
     {
-      name: 'Mana Generation',
-      description: 'Add mana to pool',
+      name: 'Generar Maná',
+      description: 'Añade maná al pool',
       template: { activated: [{ cost: '{T}', effects: [{ op: 'gain_mana', colors: ['C'], amount: 1 }] }] }
     }
   ];
 
   const getRarityPullRate = (rarity?: string) => {
     switch (rarity) {
-      case 'common': return '~66% of packs (10/15 cards)';
-      case 'uncommon': return '~20% of packs (3/15 cards)';
-      case 'rare': return '~7% of packs (1/15 cards)';
-      case 'mythic': return '~0.9% of packs (1/8 rare slots)';
-      case 'land': return '~7% of packs (1/15 cards)';
-      case 'token': return 'Special tokens only';
-      default: return 'Unknown';
+      case 'common': return '~66% de sobres (10/15 cartas)';
+      case 'uncommon': return '~20% de sobres (3/15 cartas)';
+      case 'rare': return '~7% de sobres (1/15 cartas)';
+      case 'mythic': return '~0.9% de sobres (1/8 espacios raros)';
+      case 'land': return '~7% de sobres (1/15 cartas)';
+      case 'token': return 'Solo fichas especiales';
+      default: return 'Desconocido';
     }
   };
 
