@@ -47,7 +47,8 @@ const ManaSymbol: React.FC<{ symbol: string }> = ({ symbol }) => {
   );
 };
 
-// Colores por tipo de carta (como Magic)
+// Colores por tipo de carta (como Magic) - Deprecated, usando getDominantManaColor ahora
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const typeColors = {
   // Básicos
   'Criatura': 'from-green-700 via-green-600 to-green-800',

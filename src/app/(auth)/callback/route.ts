@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Si el usuario se acaba de registrar, crear perfil
-    if (data.user && data.user.email_confirmed_at) {
+    if (data.user?.email_confirmed_at) {
       try {
         // Intentar crear/actualizar el perfil
         const { error: profileError } = await supabase
