@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/lib/supabaseClient';
@@ -34,6 +35,7 @@ interface CardForm {
 }
 
 const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => {
+  const router = useRouter();
   const [form, setForm] = useState<CardForm>({
     external_code: '',
     name: '',
@@ -178,7 +180,12 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
         if (error) throw error;
       }
 
-      onSave?.(cardData);
+      // Call onSave callback if provided, otherwise navigate to cards page
+      if (onSave) {
+        onSave(cardData);
+      } else {
+        router.push('/admin/cards');
+      }
     } catch (error: any) {
       console.error('Error saving card:', error);
       setErrors([error.message || 'Failed to save card']);
@@ -805,7 +812,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
             </Button>
             
             <Button
-              onClick={onCancel}
+              onClick={onCancel || (() => router.back())}
               variant="outline"
               disabled={isLoading}
             >

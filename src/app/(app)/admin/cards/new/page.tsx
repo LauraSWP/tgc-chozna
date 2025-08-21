@@ -12,8 +12,7 @@ export default async function NewCardPage() {
   if (profile?.role !== 'admin') redirect('/dashboard');
 
   const handleCardSaved = () => {
-    // Redirect to cards management after saving
-    window.location.href = '/admin/cards';
+    // This will be handled on the client side by the CardEditor component
   };
 
   return (
@@ -30,10 +29,7 @@ export default async function NewCardPage() {
         </Button>
       </div>
 
-      <CardEditor
-        onSave={handleCardSaved}
-        onCancel={() => window.history.back()}
-      />
+      <CardEditor />
     </div>
   );
 }

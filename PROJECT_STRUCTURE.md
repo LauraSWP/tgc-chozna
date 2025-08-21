@@ -36,15 +36,20 @@ src/app/
 ├── (app)/                    # Protected application pages
 │   ├── layout.tsx            # App layout with navigation
 │   ├── dashboard/page.tsx    # User dashboard
-│   ├── collection/page.tsx   # Card collection viewer
-│   ├── decks/               # Deck management
-│   │   ├── page.tsx         # Deck list
-│   │   └── [deckId]/page.tsx # Deck editor
+│   ├── collection/page.tsx   # Card collection viewer (placeholder)
+│   ├── decks/page.tsx       # Deck management (placeholder)
 │   ├── shop/page.tsx        # Pack opening shop
-│   ├── play/                # Game interface
-│   │   ├── page.tsx         # Match lobby
-│   │   └── [matchId]/page.tsx # Active game
-│   └── admin/page.tsx       # Admin dashboard
+│   ├── play/page.tsx        # Game lobby (placeholder)
+│   └── admin/               # Admin management tools
+│       ├── page.tsx         # Admin dashboard
+│       ├── cards/           # Card management
+│       │   ├── page.tsx     # Card list management
+│       │   └── new/page.tsx # Create new card
+│       ├── users/page.tsx   # User management
+│       ├── shop/page.tsx    # Shop management (placeholder)
+│       ├── analytics/page.tsx # Analytics dashboard (placeholder)
+│       ├── matches/page.tsx # Match management (placeholder)
+│       └── system/page.tsx  # System tools (placeholder)
 └── api/                     # API endpoints
     └── packs/open/route.ts  # Pack opening API
 ```
@@ -58,12 +63,16 @@ src/components/
 │   ├── button.tsx          # Button component
 │   ├── card.tsx            # Card container component
 │   └── ...                 # Other UI primitives
+├── admin/                   # Admin-specific components
+│   ├── CardEditor.tsx      # Card creation/editing interface
+│   ├── CardManagementClient.tsx # Card management interface
+│   ├── CardPreview.tsx     # Card preview component
+│   └── UserManagementClient.tsx # User management interface
 ├── AppNavigation.tsx       # Main app navigation bar
 ├── CardView.tsx           # Individual card display
+├── MagicCard.tsx          # Magic card rendering component
 ├── PackOpenReveal.tsx     # Pack opening animation/UI
-├── DeckBuilder.tsx        # Deck building interface
-├── Board.tsx              # Game board display
-└── Hand.tsx               # Player hand display
+└── DeckBuilder.tsx        # Deck building interface
 ```
 
 ### Library Code (`src/lib/`)
