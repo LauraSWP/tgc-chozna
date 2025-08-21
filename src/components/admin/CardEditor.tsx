@@ -399,233 +399,366 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>{cardId ? 'Edit Card' : 'Create New Card'}</CardTitle>
-          <CardDescription>
-            {cardId ? 'Modify an existing card definition' : 'Create a new card for the game'}
+          <CardTitle className="text-2xl">
+            {cardId ? '✏️ Editar Carta' : '🆕 Crear Nueva Carta'}
+          </CardTitle>
+          <CardDescription className="text-lg">
+            {cardId ? 'Modifica una carta existente' : 'Crea una nueva carta para el juego'}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Card Preview and Image Upload */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
-              <h3 className="font-semibold mb-4">Card Preview</h3>
-              <div className="space-y-4">
-                {/* Card Image */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Card Artwork</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                    {imagePreview || form.image_url ? (
-                      <div className="space-y-2">
-                        <img
-                          src={imagePreview || form.image_url}
-                          alt="Card preview"
-                          className="w-full h-32 object-cover rounded"
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setImagePreview('');
-                            setImageFile(null);
-                            setForm(prev => ({ ...prev, image_url: '' }));
-                          }}
-                        >
-                          Remove Image
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <div className="text-gray-400 text-4xl">🖼️</div>
-                        <p className="text-sm text-gray-500">No image selected</p>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="mt-2 space-y-2">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileSelect}
-                      className="w-full text-sm"
-                      id="image-upload"
-                    />
-                    
-                    {imageFile && (
-                      <Button
-                        type="button"
-                        onClick={() => handleImageUpload(imageFile)}
-                        disabled={uploadingImage}
-                        className="w-full"
-                        size="sm"
-                      >
-                        {uploadingImage ? 'Uploading...' : 'Upload Image'}
-                      </Button>
-                    )}
-                    
-                    <div className="text-xs text-gray-500">
-                      Or paste image URL below
+        <CardContent className="space-y-8">
+          {/* Main Layout: Image Preview + Form */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            {/* Left Column: Large Image Preview */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  🎨 Vista Previa de la Carta
+                </h3>
+                <div className="space-y-4">
+                  {/* Large Card Image */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                      🖼️ Imagen de la Carta
+                      <span className="text-xs text-gray-500 ml-2">(Esta será la imagen principal de tu carta)</span>
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
+                      {imagePreview || form.image_url ? (
+                        <div className="space-y-4">
+                          <img
+                            src={imagePreview || form.image_url}
+                            alt="Vista previa de carta"
+                            className="w-full h-64 object-cover rounded-lg shadow-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setImagePreview('');
+                              setImageFile(null);
+                              setForm(prev => ({ ...prev, image_url: '' }));
+                            }}
+                          >
+                            🗑️ Quitar Imagen
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4 py-8">
+                          <div className="text-gray-400 text-6xl">🖼️</div>
+                          <div>
+                            <p className="font-medium text-gray-600">No hay imagen seleccionada</p>
+                            <p className="text-sm text-gray-500">Sube una imagen para ver cómo quedará tu carta</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    
-                    <input
-                      type="url"
-                      value={form.image_url}
-                      onChange={(e) => setForm(prev => ({ ...prev, image_url: e.target.value }))}
-                      className="w-full border rounded-md px-3 py-2 text-sm"
-                      placeholder="https://example.com/image.jpg"
-                    />
+                  
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileSelect}
+                          className="w-full text-sm border rounded-md px-3 py-2"
+                          id="image-upload"
+                        />
+                        {imageFile && (
+                          <Button
+                            type="button"
+                            onClick={() => handleImageUpload(imageFile)}
+                            disabled={uploadingImage}
+                            size="sm"
+                          >
+                            {uploadingImage ? '⬆️ Subiendo...' : '⬆️ Subir'}
+                          </Button>
+                        )}
+                      </div>
+                      
+                      <div className="text-center text-xs text-gray-500">
+                        O pega una URL de imagen aquí abajo
+                      </div>
+                      
+                      <input
+                        type="url"
+                        value={form.image_url}
+                        onChange={(e) => setForm(prev => ({ ...prev, image_url: e.target.value }))}
+                        className="w-full border rounded-md px-3 py-2 text-sm"
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {/* Frame Style */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Frame Style</label>
-                  <select
-                    value={form.frame_style}
-                    onChange={(e) => setForm(prev => ({ ...prev, frame_style: e.target.value }))}
-                    className="w-full border rounded-md px-3 py-2"
-                  >
-                    {frameStyles.map(style => (
-                      <option key={style.value} value={style.value}>
-                        {style.label}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {frameStyles.find(s => s.value === form.frame_style)?.preview}
-                  </p>
-                </div>
+                  {/* Frame Style */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                      🖼️ Estilo del Marco
+                      <span className="text-xs text-gray-500 ml-2">(Cambia el diseño del borde de la carta)</span>
+                    </label>
+                    <select
+                      value={form.frame_style}
+                      onChange={(e) => setForm(prev => ({ ...prev, frame_style: e.target.value }))}
+                      className="w-full border rounded-md px-3 py-2"
+                    >
+                      {frameStyles.map(style => (
+                        <option key={style.value} value={style.value}>
+                          {style.label}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {frameStyles.find(s => s.value === form.frame_style)?.preview}
+                    </p>
+                  </div>
 
-                {/* Live Preview */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Live Preview</label>
-                  <div className="flex justify-center">
-                    <CardPreview
-                      card={{
-                        name: form.name || 'Card Name',
-                        typeLine: form.type_line || 'Type — Subtype',
-                        manaCost: form.mana_cost,
-                        power: form.power ?? undefined,
-                        toughness: form.toughness ?? undefined,
-                        keywords: form.keywords,
-                        flavorText: form.flavor_text,
-                        rarity: rarities.find(r => r.id === form.rarity_id)?.code as any || 'common'
-                      }}
-                      frameStyle={form.frame_style}
-                      imageUrl={imagePreview || form.image_url}
-                      className="scale-75"
-                    />
+                  {/* Live Preview */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-700">
+                      ⚡ Vista Previa en Vivo
+                      <span className="text-xs text-gray-500 ml-2">(Así se verá tu carta en el juego)</span>
+                    </label>
+                    <div className="flex justify-center bg-gradient-to-br from-blue-50 to-purple-50 p-4 rounded-lg">
+                      <CardPreview
+                        card={{
+                          name: form.name || 'Nombre de la Carta',
+                          typeLine: form.type_line || 'Tipo — Subtipo',
+                          manaCost: form.mana_cost,
+                          power: form.power ?? undefined,
+                          toughness: form.toughness ?? undefined,
+                          keywords: form.keywords,
+                          flavorText: form.flavor_text,
+                          rarity: rarities.find(r => r.id === form.rarity_id)?.code as any || 'common'
+                        }}
+                        frameStyle={form.frame_style}
+                        imageUrl={imagePreview || form.image_url}
+                        className="scale-90"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="lg:col-span-2">
-              <h3 className="font-semibold mb-4">Card Details</h3>
+            {/* Right Column: Form Details */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                📝 Detalles de la Carta
+              </h3>
               
-              {/* Basic Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">External Code</label>
-              <input
-                type="text"
-                value={form.external_code}
-                onChange={(e) => setForm(prev => ({ ...prev, external_code: e.target.value }))}
-                className="w-full border rounded-md px-3 py-2"
-                placeholder="BAS001"
-              />
-            </div>
+              {/* Basic Card Information */}
+              <div className="space-y-6 bg-white p-6 rounded-lg border">
+                <h4 className="font-semibold text-lg flex items-center gap-2">
+                  ℹ️ Información Básica
+                </h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                      🏷️ Código Externo
+                      <span className="text-xs text-gray-500 ml-2">(Identificador único, ej: BAS001)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={form.external_code}
+                      onChange={(e) => setForm(prev => ({ ...prev, external_code: e.target.value }))}
+                      className="w-full border rounded-md px-3 py-2"
+                      placeholder="BAS001"
+                    />
+                  </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Name *</label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full border rounded-md px-3 py-2"
-                placeholder="Card Name"
-                required
-              />
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                      📛 Nombre de la Carta *
+                      <span className="text-xs text-gray-500 ml-2">(El nombre que aparecerá en la carta)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full border rounded-md px-3 py-2"
+                      placeholder="Desarrollador Cafetero"
+                      required
+                    />
+                  </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Type Line *</label>
-              <input
-                type="text"
-                value={form.type_line}
-                onChange={(e) => setForm(prev => ({ ...prev, type_line: e.target.value }))}
-                className="w-full border rounded-md px-3 py-2"
-                placeholder="Creature — Human Developer"
-                required
-              />
-            </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                      🎭 Línea de Tipo *
+                      <span className="text-xs text-gray-500 ml-2">(Qué tipo de carta es, ej: Criatura — Humano Desarrollador)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={form.type_line}
+                      onChange={(e) => setForm(prev => ({ ...prev, type_line: e.target.value }))}
+                      className="w-full border rounded-md px-3 py-2"
+                      placeholder="Criatura — Humano Desarrollador"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Mana Cost</label>
-              <input
-                type="text"
-                value={form.mana_cost}
-                onChange={(e) => setForm(prev => ({ ...prev, mana_cost: e.target.value }))}
-                className="w-full border rounded-md px-3 py-2"
-                placeholder="{2}{R}{G}"
-              />
-            </div>
+              {/* Mana Cost Builder */}
+              <div className="space-y-4 bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border">
+                <h4 className="font-semibold text-lg flex items-center gap-2">
+                  ⚡ Constructor de Coste de Maná
+                  <span className="text-xs text-gray-500 ml-2">(Haz clic en los símbolos para añadir maná)</span>
+                </h4>
+                
+                {/* Current Mana Cost Display */}
+                <div className="bg-white p-4 rounded-md border">
+                  <label className="block text-sm font-medium mb-2">Coste Actual:</label>
+                  <div className="flex items-center gap-2 flex-wrap min-h-10">
+                    {manaCostBuilder.length > 0 ? (
+                      <>
+                        {manaCostBuilder.map((symbol, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => removeManaSymbol(index)}
+                            className={`w-8 h-8 rounded-full border-2 border-gray-400 text-sm font-bold flex items-center justify-center hover:bg-red-100 transition-colors ${
+                              manaSymbols.find(m => m.symbol === symbol)?.color || 'bg-gray-300'
+                            } ${symbol === 'B' ? 'text-white' : 'text-black'}`}
+                            title={`Clic para quitar ${symbol}`}
+                          >
+                            {symbol}
+                          </button>
+                        ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={clearManaCost}
+                        >
+                          🗑️ Limpiar
+                        </Button>
+                      </>
+                    ) : (
+                      <span className="text-gray-500 italic">Sin coste de maná</span>
+                    )}
+                  </div>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Power</label>
-              <input
-                type="number"
-                value={form.power || ''}
-                onChange={(e) => setForm(prev => ({ ...prev, power: e.target.value ? parseInt(e.target.value) : null }))}
-                className="w-full border rounded-md px-3 py-2"
-                min="0"
-                max="99"
-              />
-            </div>
+                {/* Mana Symbol Buttons */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Símbolos de Maná Disponibles:</label>
+                  <div className="grid grid-cols-7 md:grid-cols-14 gap-2">
+                    {manaSymbols.map((mana) => (
+                      <button
+                        key={mana.symbol}
+                        type="button"
+                        onClick={() => addManaSymbol(mana.symbol)}
+                        className={`w-10 h-10 rounded-full border-2 border-gray-400 text-sm font-bold flex items-center justify-center hover:scale-110 transition-transform ${
+                          mana.color
+                        } ${mana.symbol === 'B' ? 'text-white' : 'text-black'}`}
+                        title={`Añadir ${mana.label}`}
+                      >
+                        {mana.symbol}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    💡 Tip: Los números representan maná incoloro, las letras representan colores específicos
+                  </p>
+                </div>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Toughness</label>
-              <input
-                type="number"
-                value={form.toughness || ''}
-                onChange={(e) => setForm(prev => ({ ...prev, toughness: e.target.value ? parseInt(e.target.value) : null }))}
-                className="w-full border rounded-md px-3 py-2"
-                min="0"
-                max="99"
-              />
-            </div>
+              {/* Creature Stats */}
+              <div className="space-y-4 bg-orange-50 p-6 rounded-lg border">
+                <h4 className="font-semibold text-lg flex items-center gap-2">
+                  💪 Estadísticas de Criatura
+                  <span className="text-xs text-gray-500 ml-2">(Solo para criaturas)</span>
+                </h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                      ⚔️ Poder
+                      <span className="text-xs text-gray-500 ml-2">(Daño que hace al atacar)</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={form.power || ''}
+                      onChange={(e) => setForm(prev => ({ ...prev, power: e.target.value ? parseInt(e.target.value) : null }))}
+                      className="w-full border rounded-md px-3 py-2"
+                      min="0"
+                      max="99"
+                      placeholder="0"
+                    />
+                  </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Rarity *</label>
-              <select
-                value={form.rarity_id}
-                onChange={(e) => setForm(prev => ({ ...prev, rarity_id: parseInt(e.target.value) }))}
-                className="w-full border rounded-md px-3 py-2"
-                required
-              >
-                {rarities.map(rarity => (
-                  <option key={rarity.id} value={rarity.id}>
-                    {rarity.display_name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                      🛡️ Resistencia
+                      <span className="text-xs text-gray-500 ml-2">(Daño que puede recibir antes de morir)</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={form.toughness || ''}
+                      onChange={(e) => setForm(prev => ({ ...prev, toughness: e.target.value ? parseInt(e.target.value) : null }))}
+                      className="w-full border rounded-md px-3 py-2"
+                      min="0"
+                      max="99"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-500 bg-white p-3 rounded border">
+                  💡 <strong>Tip:</strong> Solo rellena estos campos si tu carta es una criatura. Las cartas de hechizo, encantamiento, etc. no necesitan poder y resistencia.
+                </div>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Set *</label>
-              <select
-                value={form.set_id}
-                onChange={(e) => setForm(prev => ({ ...prev, set_id: e.target.value }))}
-                className="w-full border rounded-md px-3 py-2"
-                required
-              >
-                <option value="">Select a set</option>
-                {sets.map(set => (
-                  <option key={set.id} value={set.id}>
-                    {set.name} ({set.code})
-                  </option>
-                ))}
-              </select>
+              {/* Rarity and Set */}
+              <div className="space-y-4 bg-purple-50 p-6 rounded-lg border">
+                <h4 className="font-semibold text-lg flex items-center gap-2">
+                  💎 Rareza y Colección
+                </h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                      ⭐ Rareza de la Carta *
+                      <span className="text-xs text-gray-500 ml-2">(Qué tan rara es en los sobres)</span>
+                    </label>
+                    <select
+                      value={form.rarity_id}
+                      onChange={(e) => setForm(prev => ({ ...prev, rarity_id: parseInt(e.target.value) }))}
+                      className="w-full border rounded-md px-3 py-2"
+                      required
+                    >
+                      {rarities.map(rarity => (
+                        <option key={rarity.id} value={rarity.id}>
+                          {rarity.display_name}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      📊 Probabilidad: {getRarityPullRate(rarities.find(r => r.id === form.rarity_id)?.code)}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                      📚 Colección *
+                      <span className="text-xs text-gray-500 ml-2">(A qué set pertenece esta carta)</span>
+                    </label>
+                    <select
+                      value={form.set_id}
+                      onChange={(e) => setForm(prev => ({ ...prev, set_id: e.target.value }))}
+                      className="w-full border rounded-md px-3 py-2"
+                      required
+                    >
+                      <option value="">Selecciona una colección</option>
+                      {sets.map(set => (
+                        <option key={set.id} value={set.id}>
+                          {set.name} ({set.code})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -1,30 +1,32 @@
-// deno-lint-ignore-file no-explicit-any
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
-};
+}
 
-// Seedable RNG for reproducible pack opening
+// Seeded RNG for deterministic pack generation
 class PackRNG {
   private seed: number;
-  
+
   constructor(seed: number) {
     this.seed = seed;
   }
-  
+
+  // Linear congruential generator
   next(): number {
     this.seed = (this.seed * 1664525 + 1013904223) % Math.pow(2, 32);
     return this.seed / Math.pow(2, 32);
   }
-  
-  choice<T>(array: T[]): T {
-    return array[Math.floor(this.next() * array.length)];
+
+  // Choose random element from array
+  choice<T>(items: T[]): T {
+    const index = Math.floor(this.next() * items.length);
+    return items[index];
   }
-  
+
+  // Weighted random choice
   weightedChoice<T>(items: T[], weights: number[]): T {
     const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
     let random = this.next() * totalWeight;
@@ -37,6 +39,11 @@ class PackRNG {
     }
     
     return items[items.length - 1];
+  }
+
+  // Generate integer between min and max (inclusive)
+  nextInt(min: number, max: number): number {
+    return Math.floor(this.next() * (max - min + 1)) + min;
   }
 }
 
@@ -56,12 +63,12 @@ serve(async (req) => {
     
     if (!userId || !setCode) {
       return new Response(
-        JSON.stringify({ error: 'Missing required parameters' }), 
+        JSON.stringify({ error: 'Faltan parámetros requeridos' }), 
         { status: 400, headers: corsHeaders }
       );
     }
 
-    console.log(`Opening ${quantity} pack(s) for user ${userId}, set ${setCode}`);
+    console.log(`Abriendo ${quantity} sobre(s) para usuario ${userId}, set ${setCode}`);
 
     // 1. Get set information
     const { data: setData, error: setError } = await supabase
@@ -72,7 +79,7 @@ serve(async (req) => {
 
     if (setError || !setData) {
       return new Response(
-        JSON.stringify({ error: 'Set not found' }),
+        JSON.stringify({ error: 'Set no encontrado' }),
         { status: 404, headers: corsHeaders }
       );
     }
@@ -97,59 +104,107 @@ serve(async (req) => {
 
     if (configError || !packConfig) {
       return new Response(
-        JSON.stringify({ error: 'Pack configuration not found' }),
+        JSON.stringify({ error: 'Configuración de sobre no encontrada' }),
         { status: 404, headers: corsHeaders }
       );
     }
 
-    // 3. Check user currency
+    // 3. Check and update user currency
+    const totalCost = packConfig.price_coins * quantity;
+    
     const { data: userCurrency, error: currencyError } = await supabase
       .from('user_currencies')
       .select('*')
       .eq('user_id', userId)
       .single();
 
-    if (currencyError || !userCurrency) {
+    if (currencyError) {
+      // Create user currency if it doesn't exist
+      const { error: createError } = await supabase
+        .from('user_currencies')
+        .insert({
+          user_id: userId,
+          coins: 1000, // Starting coins
+          gems: 0
+        });
+      
+      if (createError) {
+        return new Response(
+          JSON.stringify({ error: 'Error al crear monedas de usuario' }),
+          { status: 500, headers: corsHeaders }
+        );
+      }
+      
+      // Try again
+      const { data: newCurrency } = await supabase
+        .from('user_currencies')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+      
+      if (!newCurrency || newCurrency.coins < totalCost) {
+        return new Response(
+          JSON.stringify({ error: 'Monedas insuficientes' }),
+          { status: 400, headers: corsHeaders }
+        );
+      }
+    } else if (!userCurrency || userCurrency.coins < totalCost) {
       return new Response(
-        JSON.stringify({ error: 'User currency not found' }),
-        { status: 404, headers: corsHeaders }
-      );
-    }
-
-    const totalCost = (packConfig.price_coins || 150) * quantity;
-    if (userCurrency.coins < totalCost) {
-      return new Response(
-        JSON.stringify({ error: 'Insufficient coins' }),
+        JSON.stringify({ error: 'Monedas insuficientes' }),
         { status: 400, headers: corsHeaders }
       );
     }
 
-    // 4. Build card pools by rarity
-    const pools: Record<string, any[]> = {};
-    const rarities = ['common', 'uncommon', 'rare', 'mythic', 'land', 'token'];
-    
-    for (const rarity of rarities) {
-      const { data: cards } = await supabase
-        .from('card_definitions')
-        .select(`
-          id,
-          name,
-          type_line,
-          rarity_id,
-          rarities!inner(code)
-        `)
-        .eq('set_id', setData.id)
-        .eq('is_active', true)
-        .eq('rarities.code', rarity);
-      
-      pools[rarity] = cards || [];
+    // Update user currency
+    const { error: updateError } = await supabase
+      .from('user_currencies')
+      .update({ 
+        coins: (userCurrency?.coins || 1000) - totalCost 
+      })
+      .eq('user_id', userId);
+
+    if (updateError) {
+      return new Response(
+        JSON.stringify({ error: 'Error al actualizar monedas' }),
+        { status: 500, headers: corsHeaders }
+      );
     }
 
-    console.log('Pool sizes:', Object.fromEntries(
-      Object.entries(pools).map(([k, v]) => [k, v.length])
-    ));
+    // 4. Get card pools by rarity
+    const { data: allCards, error: cardsError } = await supabase
+      .from('card_definitions')
+      .select(`
+        *,
+        rarities(code, display_name, color)
+      `)
+      .eq('set_id', setData.id)
+      .eq('is_active', true);
 
-    // 5. Open packs
+    if (cardsError || !allCards) {
+      return new Response(
+        JSON.stringify({ error: 'Error al obtener cartas' }),
+        { status: 500, headers: corsHeaders }
+      );
+    }
+
+    // Group cards by rarity
+    const pools: Record<string, any[]> = {
+      common: [],
+      uncommon: [],
+      rare: [],
+      mythic: [],
+      land: [],
+      token: []
+    };
+
+    allCards.forEach(card => {
+      const rarity = card.rarities?.code || 'common';
+      if (pools[rarity]) {
+        pools[rarity].push(card);
+      }
+    });
+
+    // 5. Generate packs
     const allNewCards: any[] = [];
     const openResults: any[] = [];
 
@@ -159,7 +214,7 @@ serve(async (req) => {
       for (let i = 0; i < userId.length; i++) {
         seed = (seed * 31 + userId.charCodeAt(i)) % Math.pow(2, 32);
       }
-      seed = (seed + Date.now() + packIndex) % Math.pow(2, 32);
+      seed = (seed + Date.now() + packIndex * 1000) % Math.pow(2, 32);
       
       const rng = new PackRNG(seed);
       const packCards: any[] = [];
@@ -193,6 +248,14 @@ serve(async (req) => {
           const selectedCard = rng.choice(poolCards);
           packCards.push(selectedCard);
           packFoils.push(isFoil);
+        } else {
+          // Fallback to common if pool is empty
+          const fallbackPool = pools['common'] || [];
+          if (fallbackPool.length > 0) {
+            const selectedCard = rng.choice(fallbackPool);
+            packCards.push(selectedCard);
+            packFoils.push(isFoil);
+          }
         }
       }
 
@@ -202,6 +265,7 @@ serve(async (req) => {
         foils: packFoils
       });
 
+      // Prepare cards for insertion into user collection
       allNewCards.push(...packCards.map((card: any, index: number) => ({
         owner: userId,
         card_def_id: card.id,
@@ -210,77 +274,56 @@ serve(async (req) => {
     }
 
     // 6. Insert new cards into user collection
-    const { data: insertedCards, error: insertError } = await supabase
-      .from('user_cards')
-      .insert(allNewCards)
-      .select(`
-        id,
-        foil,
-        card_def_id,
-        card_definitions(
-          id,
-          name,
-          type_line,
-          image_url,
-          rarities(code, display_name, color)
-        )
-      `);
+    if (allNewCards.length > 0) {
+      const { error: insertError } = await supabase
+        .from('user_cards')
+        .insert(allNewCards);
 
-    if (insertError) {
-      console.error('Insert error:', insertError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to add cards to collection' }),
-        { status: 500, headers: corsHeaders }
-      );
+      if (insertError) {
+        console.error('Error inserting cards:', insertError);
+        // Rollback currency change
+        await supabase
+          .from('user_currencies')
+          .update({ 
+            coins: (userCurrency?.coins || 1000) 
+          })
+          .eq('user_id', userId);
+        
+        return new Response(
+          JSON.stringify({ error: 'Error al añadir cartas a la colección' }),
+          { status: 500, headers: corsHeaders }
+        );
+      }
     }
 
-    // 7. Deduct currency
-    const { error: currencyUpdateError } = await supabase
-      .from('user_currencies')
-      .update({ coins: userCurrency.coins - totalCost })
-      .eq('user_id', userId);
-
-    if (currencyUpdateError) {
-      console.error('Currency update error:', currencyUpdateError);
-      // Note: In production, this should be handled in a transaction
-    }
-
-    // 8. Log transaction
+    // 7. Log transaction
     await supabase
       .from('transactions')
       .insert({
         user_id: userId,
-        type: 'pack_purchase',
+        type: 'pack_open',
         amount_coins: -totalCost,
-        description: `Opened ${quantity} ${setData.name} booster pack${quantity > 1 ? 's' : ''}`
+        amount_gems: 0,
+        description: `Apertura de ${quantity} sobre(s) de ${setData.name}`
       });
 
-    // 9. Prepare response
-    const response = {
-      success: true,
-      packs: openResults.map((result: any, index: number) => ({
-        packNumber: result.packIndex,
-        cards: result.cards.map((card: any, cardIndex: number) => {
-          const insertedCard = insertedCards?.[index * packConfig.total_cards + cardIndex];
-          return {
-            userCardId: insertedCard?.id,
-            definition: insertedCard?.card_definitions,
-            foil: result.foils[cardIndex]
-          };
-        })
-      })),
-      totalCards: allNewCards.length,
-      coinsSpent: totalCost,
-      remainingCoins: userCurrency.coins - totalCost
-    };
-
-    console.log(`Successfully opened ${quantity} pack(s), added ${allNewCards.length} cards`);
-
+    // 8. Return results
+    const remainingCoins = (userCurrency?.coins || 1000) - totalCost;
+    
     return new Response(
-      JSON.stringify(response),
+      JSON.stringify({
+        success: true,
+        packs: openResults,
+        totalCards: allNewCards.length,
+        coinsSpent: totalCost,
+        remainingCoins: remainingCoins,
+        setName: setData.name
+      }),
       { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        } 
       }
     );
 
@@ -288,12 +331,15 @@ serve(async (req) => {
     console.error('Pack opening error:', error);
     return new Response(
       JSON.stringify({ 
-        error: 'Internal server error',
+        error: 'Error interno del servidor',
         details: error.message 
       }),
       { 
         status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        } 
       }
     );
   }
