@@ -87,6 +87,8 @@ const rarityColors = {
 
   // Función para obtener bordes especiales según rareza
   const getRarityBorder = (rarity: string): string => {
+    if (!rarity) return 'border-2 border-gray-800';
+    
     switch (rarity.toLowerCase()) {
       case 'mythic':
         return 'border-4 border-double border-orange-400 shadow-2xl shadow-orange-500/50';
@@ -102,6 +104,8 @@ const rarityColors = {
 
   // Función para obtener efectos especiales de rareza
   const getRarityEffects = (rarity: string): string => {
+    if (!rarity) return '';
+    
     switch (rarity.toLowerCase()) {
       case 'mythic':
         return 'before:absolute before:inset-0 before:bg-gradient-to-br before:from-orange-500/20 before:via-yellow-500/10 before:to-red-500/20 before:rounded-lg before:pointer-events-none';

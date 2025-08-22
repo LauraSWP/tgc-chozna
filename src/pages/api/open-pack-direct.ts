@@ -165,7 +165,10 @@ export default async function handler(
         packNumber: i + 1,
         cards: packCards.map(card => ({
           userCardId: `temp-${Date.now()}-${Math.random()}`,
-          definition: card.definition,
+          definition: {
+            ...card.definition,
+            rarity: card.definition.rarities?.code || 'common' // Fix: Extract rarity code
+          },
           foil: card.foil
         }))
       });
