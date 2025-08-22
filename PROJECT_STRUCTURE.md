@@ -16,6 +16,7 @@ my-tcg/
 ├── tsconfig.json             # TypeScript configuration
 ├── postcss.config.mjs        # PostCSS configuration
 ├── .eslintrc.cjs             # ESLint configuration
+├── vercel.json               # Vercel deployment configuration
 ├── env.example               # Environment variables template
 └── README.md                 # Project documentation
 ```
@@ -243,6 +244,12 @@ public/
 - **API**: Next.js API routes + Supabase Edge Functions
 - **Real-time**: Supabase real-time subscriptions
 - **Security**: Row-level security policies
+
+### Deployment
+- **Hosting**: Vercel for frontend and API routes
+- **Configuration**: `vercel.json` for optimized Vercel deployment
+- **Build Optimization**: SWC minification for production
+- **Functions**: Serverless API routes with Node.js runtime
 
 ### Game Engine
 - **Architecture**: Pure functions with immutable state

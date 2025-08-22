@@ -5,6 +5,11 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  // Optimize for Vercel deployment
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   images: {
     domains: [
       'localhost',
