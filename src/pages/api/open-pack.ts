@@ -41,6 +41,14 @@ export default async function handler(
 
     const { set_code: setCode, quantity = 1 } = validation.data;
 
+    // Debug logging
+    console.log('Calling Supabase Edge Function with:', {
+      url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/open_pack`,
+      userId: user.id,
+      setCode,
+      quantity
+    });
+
     // Call the Supabase Edge Function for production pack opening
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/open_pack`,
@@ -57,6 +65,8 @@ export default async function handler(
         }),
       }
     );
+
+    console.log('Edge Function response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
