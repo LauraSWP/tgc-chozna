@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import PackOpenReveal from '@/components/PackOpenReveal';
+import PackOpeningAnimation from '@/components/PackOpeningAnimation';
 import { supabase } from '@/lib/supabaseClient';
 import { formatCurrency } from '@/lib/utils';
 
@@ -200,11 +200,11 @@ export default function ShopPage() {
         <CardHeader>
           <CardTitle>Abrir Sobres</CardTitle>
           <CardDescription>
-            Elige tus sobres y descubre tus cartas
+            Elige tus sobres y descubre tus cartas con increíbles animaciones
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PackOpenReveal
+          <PackOpeningAnimation
             onOpenPack={handlePackOpen}
             userCoins={userCurrency.coins}
           />

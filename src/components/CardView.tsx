@@ -57,12 +57,15 @@ const CardView: React.FC<CardViewProps> = ({
   return (
     <Card
       className={cn(
-        'relative overflow-hidden transition-all duration-200',
+        'relative overflow-hidden transition-all duration-200 group',
         sizeClasses[size],
         interactive && 'cursor-pointer card-hover',
         selected && 'ring-2 ring-blue-500 ring-offset-2',
-        foil && 'foil-effect',
+        foil && 'foil-effect glow-foil',
         `card-rarity-${card.rarity}`,
+        card.rarity === 'mythic' && 'glow-mythic',
+        card.rarity === 'rare' && 'glow-rare',
+        card.rarity === 'uncommon' && 'glow-uncommon',
         className
       )}
       style={{ borderColor: rarityColor }}
@@ -124,8 +127,29 @@ const CardView: React.FC<CardViewProps> = ({
 
         {/* Foil indicator */}
         {foil && (
-          <div className="absolute top-1 right-1 bg-yellow-400 text-yellow-900 text-xs px-1 rounded">
+          <div className="absolute top-1 right-1 bg-yellow-400 text-yellow-900 text-xs px-1 rounded animate-pulse">
             ✨
+          </div>
+        )}
+
+        {/* Rarity particles for mythic and rare cards */}
+        {(card.rarity === 'mythic' || card.rarity === 'rare') && (
+          <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className={cn(
+                  "absolute w-1 h-1 rounded-full animate-ping",
+                  card.rarity === 'mythic' ? "bg-orange-400" : "bg-blue-400"
+                )}
+                style={{
+                  left: `${15 + (i * 15)}%`,
+                  top: `${10 + (i % 3) * 25}%`,
+                  animationDelay: `${i * 0.2}s`,
+                  animationDuration: '2s'
+                }}
+              />
+            ))}
           </div>
         )}
       </CardContent>
