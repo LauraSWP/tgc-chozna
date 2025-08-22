@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getUser } from '@/lib/auth';
+import { createServerClient } from '@supabase/ssr';
 import { validateInput, packOpenSchema } from '@/lib/validate';
+import type { Database } from '../../../supabase/types';
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,9 +13,22 @@ export default async function handler(
   }
 
   try {
+    // Create Supabase client for Pages Router
+    const supabase = createServerClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return req.cookies[name];
+          },
+        },
+      }
+    );
+
     // Authenticate user
-    const user = await getUser();
-    if (!user) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -56,8 +70,17 @@ export default async function handler(
 
   } catch (error) {
     console.error('Pack opening API error:', error);
+    
+    // Log the full error details for debugging
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
     return res.status(500).json({
-      error: 'Internal server error'
+      error: 'Internal server error',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 }
