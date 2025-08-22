@@ -42,7 +42,7 @@ export default function ShopPage() {
 
   const handlePackOpen = async (setCode: string, quantity: number) => {
     try {
-      const response = await fetch('/api/packs/open', {
+      const response = await fetch('/api/open-pack', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
