@@ -1,14 +1,36 @@
 import { redirect } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { getUser, getUserProfile } from '@/lib/auth';
+import CollectionClient from '@/components/CollectionClient';
+
+async function getCollection(userId: string) {
+  try {
+    const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/collection`, {
+      headers: {
+        'Cookie': `supabase-auth-token=${userId}` // This is a simplified example
+      }
+    });
+    
+    if (!response.ok) {
+      console.error('Failed to fetch collection');
+      return { collection: [], summary: [], totalCards: 0 };
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching collection:', error);
+    return { collection: [], summary: [], totalCards: 0 };
+  }
+}
 
 export default async function CollectionPage() {
   const user = await getUser();
   if (!user) redirect('/login');
 
   const { data: profile } = await getUserProfile(user.id);
-
+  
+  // For now, we'll pass empty data and let the client component handle the API calls
+  // In a production app, you'd want to fetch this server-side with proper auth
+  
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -21,33 +43,21 @@ export default async function CollectionPage() {
         </p>
       </div>
 
-      {/* Coming Soon */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Collection Management</CardTitle>
-          <CardDescription>
-            Your card collection and deck building tools
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center space-y-4 py-8">
-            <div className="text-6xl">🚧</div>
-            <h3 className="text-xl font-semibold">Coming Soon!</h3>
-            <p className="text-gray-600">
-              Collection management features are currently in development.
-              You'll be able to view all your cards, filter by rarity, and organize your collection here.
-            </p>
-            <div className="flex justify-center gap-2">
-              <Button variant="outline">
-                View Cards
-              </Button>
-              <Button variant="outline">
-                Filter Collection
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Collection Component - Will fetch data client-side */}
+      <CollectionWrapper />
+    </div>
+  );
+}
+
+// Wrapper component to handle client-side data fetching
+function CollectionWrapper() {
+  return (
+    <div className="space-y-6">
+      <CollectionClient 
+        collection={[]} 
+        summary={[]} 
+        totalCards={0} 
+      />
     </div>
   );
 }

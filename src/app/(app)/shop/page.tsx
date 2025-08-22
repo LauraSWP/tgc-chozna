@@ -236,7 +236,7 @@ export default function ShopPage() {
               disabled={userCurrency.coins < 150}
               className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              🎴 ¡ABRIR SOBRE MÁGICO! 🎴
+              🎴 ABRIR SOBRE 🎴
             </button>
 
             {userCurrency.coins < 150 && (

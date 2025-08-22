@@ -42,6 +42,9 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
   });
   const [openResults, setOpenResults] = useState<PackResult[]>([]);
   const [hoveredCard, setHoveredCard] = useState<number>(-1);
+  const [enlargedCard, setEnlargedCard] = useState<number>(-1);
+  const [screenShake, setScreenShake] = useState(false);
+  const [explosionParticles, setExplosionParticles] = useState<Array<{id: number, x: number, y: number, type: string}>>([]);
 
   // Listen for the button click to show the animation
   useEffect(() => {
@@ -85,20 +88,47 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
   const handleCardClick = (cardIndex: number) => {
     if (animationState.phase !== 'revealing') return;
     
-    const newRevealed = [...animationState.revealedCards];
-    newRevealed[cardIndex] = true;
-    
-    setAnimationState(prev => ({
-      ...prev,
-      revealedCards: newRevealed,
-      currentCard: cardIndex
-    }));
-
-    // Check if all cards are revealed
-    if (newRevealed.every(revealed => revealed)) {
+    if (!animationState.revealedCards[cardIndex]) {
+      // Reveal card with spectacular effects
+      const newRevealed = [...animationState.revealedCards];
+      newRevealed[cardIndex] = true;
+      
+      // Trigger screen shake for epic reveals
+      const card = openResults[0]?.cards[cardIndex];
+      if (card?.definition.rarity?.code === 'mythic' || card?.foil) {
+        setScreenShake(true);
+        setTimeout(() => setScreenShake(false), 500);
+      }
+      
+      // Add explosion particles
+      const newParticles = Array.from({length: 20}, (_, i) => ({
+        id: Date.now() + i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        type: card?.definition.rarity?.code || 'common'
+      }));
+      setExplosionParticles(prev => [...prev, ...newParticles]);
+      
+      // Clear particles after animation
       setTimeout(() => {
-        setAnimationState(prev => ({ ...prev, phase: 'completed' }));
-      }, 1000);
+        setExplosionParticles(prev => prev.filter(p => !newParticles.find(np => np.id === p.id)));
+      }, 3000);
+      
+      setAnimationState(prev => ({
+        ...prev,
+        revealedCards: newRevealed,
+        currentCard: cardIndex
+      }));
+
+      // Check if all cards are revealed
+      if (newRevealed.every(revealed => revealed)) {
+        setTimeout(() => {
+          setAnimationState(prev => ({ ...prev, phase: 'completed' }));
+        }, 1000);
+      }
+    } else {
+      // Enlarge already revealed card
+      setEnlargedCard(cardIndex);
     }
   };
 
@@ -118,29 +148,102 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
     <motion.div
       id="pack-opening-fullscreen"
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      animate={{ 
+        opacity: 1,
+        x: screenShake ? [0, -10, 10, -10, 10, 0] : 0,
+        y: screenShake ? [0, -5, 5, -5, 5, 0] : 0
+      }}
       exit={{ opacity: 0 }}
+      transition={{
+        x: { duration: 0.5 },
+        y: { duration: 0.5 }
+      }}
       className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden"
     >
-      {/* Background particles */}
+      {/* Enhanced background particles with different types */}
       <div className="absolute inset-0">
-        {[...Array(100)].map((_, i) => (
+        {/* Floating stars */}
+        {[...Array(150)].map((_, i) => (
           <motion.div
-            key={i}
+            key={`star-${i}`}
             initial={{ opacity: 0 }}
             animate={{ 
               opacity: [0, 1, 0],
-              y: [-50, -100]
+              y: [-50, -150],
+              rotate: [0, 360],
+              scale: [0.5, 1.5, 0.5]
             }}
             transition={{
-              duration: Math.random() * 3 + 2,
+              duration: Math.random() * 4 + 3,
               repeat: Infinity,
-              delay: Math.random() * 5
+              delay: Math.random() * 8
             }}
-            className="absolute w-1 h-1 bg-white rounded-full"
+            className="absolute w-2 h-2 bg-yellow-300 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              boxShadow: '0 0 10px rgba(255, 215, 0, 0.8)'
+            }}
+          />
+        ))}
+        
+        {/* Magic sparkles */}
+        {[...Array(75)].map((_, i) => (
+          <motion.div
+            key={`sparkle-${i}`}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ 
+              opacity: [0, 1, 0],
+              scale: [0, 1, 0],
+              rotate: [0, 180]
+            }}
+            transition={{
+              duration: Math.random() * 2 + 1,
+              repeat: Infinity,
+              delay: Math.random() * 6
+            }}
+            className="absolute w-3 h-3 bg-purple-400"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
+            }}
+          />
+        ))}
+        
+        {/* Explosion particles */}
+        {explosionParticles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            initial={{ 
+              opacity: 1, 
+              scale: 0,
+              x: '50vw',
+              y: '50vh'
+            }}
+            animate={{ 
+              opacity: 0,
+              scale: [0, 2, 0],
+              x: `${particle.x}vw`,
+              y: `${particle.y}vh`,
+              rotate: 360
+            }}
+            transition={{ 
+              duration: 3,
+              ease: "easeOut"
+            }}
+            className={cn(
+              "absolute w-4 h-4 rounded-full",
+              particle.type === 'mythic' && "bg-gradient-to-r from-yellow-400 to-orange-500",
+              particle.type === 'rare' && "bg-gradient-to-r from-blue-400 to-purple-500",
+              particle.type === 'uncommon' && "bg-gradient-to-r from-green-400 to-emerald-500",
+              particle.type === 'common' && "bg-gray-400"
+            )}
+            style={{
+              boxShadow: particle.type === 'mythic' ? '0 0 20px rgba(255, 215, 0, 0.8)' :
+                        particle.type === 'rare' ? '0 0 15px rgba(59, 130, 246, 0.6)' :
+                        particle.type === 'uncommon' ? '0 0 10px rgba(16, 185, 129, 0.5)' :
+                        '0 0 5px rgba(156, 163, 175, 0.4)'
             }}
           />
         ))}
@@ -232,7 +335,7 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
             <p className="text-xl text-white/80">Haz clic en cada carta para revelarla</p>
           </div>
 
-          <div className="grid grid-cols-5 gap-6 max-w-6xl">
+          <div className="grid grid-cols-5 gap-12 max-w-7xl">
             {openResults[0]?.cards.map((cardResult, index) => (
               <motion.div
                 key={cardResult.userCardId}
@@ -260,24 +363,53 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
                 <div className="relative w-40 h-56 perspective-1000">
                   {/* Card container with flip animation */}
                   <motion.div
-                    initial={{ rotateY: 180 }}
+                    initial={{ rotateY: 0 }}
                     animate={{ 
-                      rotateY: animationState.revealedCards[index] ? 0 : 180 
+                      rotateY: animationState.revealedCards[index] ? 180 : 0 
                     }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
                     className="relative w-full h-full preserve-3d"
                   >
-                    {/* Card Back */}
+                    {/* Card Back (visible by default) */}
                     <div className="absolute inset-0 backface-hidden">
-                      <div className="w-full h-full bg-gradient-to-br from-purple-800 via-indigo-800 to-purple-900 rounded-xl border-3 border-yellow-400 flex items-center justify-center shadow-xl">
+                      <div className="w-full h-full bg-gradient-to-br from-purple-800 via-indigo-800 to-purple-900 rounded-xl border-3 border-yellow-400 flex items-center justify-center shadow-xl relative overflow-hidden">
                         <div className="text-8xl opacity-50">🎴</div>
+                        
+                        {/* Ultra enhanced glow effect on hover */}
                         {hoveredCard === index && !animationState.revealedCards[index] && (
-                          <div className="absolute inset-0 bg-yellow-400/30 rounded-xl animate-pulse" />
+                          <>
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 rounded-xl opacity-60 animate-pulse" />
+                            <div className="absolute inset-0 shadow-2xl shadow-yellow-400/90 rounded-xl" />
+                            <div className="absolute inset-[-6px] bg-gradient-to-r from-yellow-300 via-orange-300 to-yellow-300 rounded-xl opacity-80 -z-10 animate-pulse" />
+                            <div className="absolute inset-[-10px] bg-gradient-to-r from-yellow-200 via-orange-200 to-yellow-200 rounded-xl opacity-40 -z-20 animate-pulse" />
+                            
+                            {/* Rotating sparkles around card */}
+                            {[...Array(8)].map((_, sparkleIndex) => (
+                              <motion.div
+                                key={sparkleIndex}
+                                animate={{ 
+                                  rotate: 360,
+                                  scale: [0.5, 1.5, 0.5]
+                                }}
+                                transition={{
+                                  duration: 2,
+                                  repeat: Infinity,
+                                  delay: sparkleIndex * 0.2
+                                }}
+                                className="absolute w-3 h-3 bg-yellow-300 rounded-full"
+                                style={{
+                                  left: `${50 + 40 * Math.cos((sparkleIndex * Math.PI * 2) / 8)}%`,
+                                  top: `${50 + 40 * Math.sin((sparkleIndex * Math.PI * 2) / 8)}%`,
+                                  boxShadow: '0 0 15px rgba(255, 215, 0, 0.9)'
+                                }}
+                              />
+                            ))}
+                          </>
                         )}
                       </div>
                     </div>
 
-                    {/* Card Front */}
+                    {/* Card Front (hidden until revealed) */}
                     <div className="absolute inset-0 backface-hidden rotate-y-180">
                       <div className="w-full h-full transform scale-110">
                         <CardView
@@ -291,15 +423,35 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
                   </motion.div>
                 </div>
 
-                {/* Click indicator */}
+                {/* Enhanced click indicator with more effects */}
                 {!animationState.revealedCards[index] && (
                   <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                    className="absolute -bottom-4 left-1/2 transform -translate-x-1/2"
+                    animate={{ 
+                      scale: [1, 1.3, 1],
+                      y: [0, -5, 0]
+                    }}
+                    transition={{ 
+                      duration: 1.5, 
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
                   >
-                    <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-bold">
-                      ¡Click!
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-yellow-200">
+                      ✨ ¡CLICK! ✨
+                    </div>
+                  </motion.div>
+                )}
+                
+                {/* Revealed card effects */}
+                {animationState.revealedCards[index] && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+                  >
+                    <div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                      🔍 Ver Más Grande
                     </div>
                   </motion.div>
                 )}
@@ -372,6 +524,105 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
           </div>
         </motion.div>
       )}
+
+      {/* Enhanced Enlarged Card Modal */}
+      <AnimatePresence>
+        {enlargedCard !== -1 && openResults[0]?.cards[enlargedCard] && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/90 flex items-center justify-center z-60 backdrop-blur-sm"
+            onClick={() => setEnlargedCard(-1)}
+          >
+            {/* Background effects for enlarged card */}
+            <div className="absolute inset-0">
+              {[...Array(50)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ 
+                    opacity: [0, 1, 0],
+                    scale: [0, 2, 0],
+                    rotate: [0, 360]
+                  }}
+                  transition={{
+                    duration: Math.random() * 3 + 2,
+                    repeat: Infinity,
+                    delay: Math.random() * 4
+                  }}
+                  className="absolute w-2 h-2 bg-yellow-300 rounded-full"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    boxShadow: '0 0 10px rgba(255, 215, 0, 0.8)'
+                  }}
+                />
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ scale: 0.3, opacity: 0, rotateY: 180 }}
+              animate={{ 
+                scale: 1, 
+                opacity: 1, 
+                rotateY: 0,
+                y: [0, -10, 0]
+              }}
+              exit={{ scale: 0.3, opacity: 0, rotateY: 180 }}
+              transition={{ 
+                type: "spring", 
+                duration: 0.8,
+                y: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className="relative max-w-2xl max-h-[90vh] w-auto h-auto perspective-1000"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Enhanced glow based on rarity */}
+              <div className={cn(
+                "absolute inset-[-20px] rounded-2xl opacity-60 animate-pulse",
+                openResults[0].cards[enlargedCard].definition.rarity?.code === 'mythic' && "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 shadow-2xl shadow-yellow-400/50",
+                openResults[0].cards[enlargedCard].definition.rarity?.code === 'rare' && "bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 shadow-2xl shadow-blue-400/50",
+                openResults[0].cards[enlargedCard].definition.rarity?.code === 'uncommon' && "bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 shadow-2xl shadow-green-400/50",
+                openResults[0].cards[enlargedCard].definition.rarity?.code === 'common' && "bg-gradient-to-r from-gray-400 via-gray-500 to-gray-400"
+              )} />
+              
+              <CardView
+                card={openResults[0].cards[enlargedCard].definition}
+                foil={openResults[0].cards[enlargedCard].foil}
+                size="large"
+                className="w-full h-full shadow-2xl transform scale-110"
+              />
+              
+              {/* Enhanced close button */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setEnlargedCard(-1)}
+                className="absolute -top-6 -right-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white w-12 h-12 rounded-full font-bold shadow-lg flex items-center justify-center text-xl border-2 border-red-300"
+              >
+                ✕
+              </motion.button>
+
+              {/* Card details overlay */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="absolute -bottom-16 left-0 right-0 text-center"
+              >
+                <div className="bg-black/70 text-white px-6 py-3 rounded-lg backdrop-blur-sm">
+                  <h3 className="text-xl font-bold">{openResults[0].cards[enlargedCard].definition.name}</h3>
+                  <p className="text-sm text-gray-300 capitalize">
+                    {openResults[0].cards[enlargedCard].definition.rarity?.name} • 
+                    {openResults[0].cards[enlargedCard].foil && " ✨ FOIL ✨"}
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

@@ -37,9 +37,9 @@ src/app/
 ├── (app)/                    # Protected application pages
 │   ├── layout.tsx            # App layout with navigation
 │   ├── dashboard/page.tsx    # User dashboard
-│   ├── collection/page.tsx   # Card collection viewer (placeholder)
-│   ├── decks/page.tsx       # Deck management (placeholder)
-│   ├── shop/page.tsx        # Pack opening shop
+│   ├── collection/page.tsx   # Card collection viewer with filtering & search
+│   ├── decks/page.tsx       # Deck management with full deck builder
+│   ├── shop/page.tsx        # Pack opening shop with animations
 │   ├── play/page.tsx        # Game lobby (placeholder)
 │   └── admin/               # Admin management tools
 │       ├── page.tsx         # Admin dashboard
@@ -52,7 +52,12 @@ src/app/
 │       ├── matches/page.tsx # Match management (placeholder)
 │       └── system/page.tsx  # System tools (placeholder)
 └── api/                     # API endpoints
-    └── packs/open/route.ts  # Pack opening API
+    ├── collection/route.ts  # User collection management API
+    ├── decks/              # Deck management APIs
+    │   ├── route.ts        # List/create decks
+    │   └── [id]/route.ts   # Specific deck CRUD operations
+    ├── packs/open/route.ts # Pack opening API (App Router)
+    └── open-pack-direct.ts # Direct pack opening API (Pages Router)
 ```
 
 ### Components (`src/components/`)
@@ -72,8 +77,10 @@ src/components/
 ├── AppNavigation.tsx       # Main app navigation bar
 ├── CardView.tsx           # Individual card display
 ├── MagicCard.tsx          # Magic card rendering component
-├── PackOpenReveal.tsx     # Pack opening animation/UI
-└── DeckBuilder.tsx        # Deck building interface
+├── PackOpeningAnimation.tsx # Epic pack opening with 3D effects & particles
+├── CollectionClient.tsx   # Collection viewing with search, filters & stats
+├── DeckBuilderClient.tsx  # Complete deck management interface
+└── DeckBuilder.tsx        # Core deck building logic component
 ```
 
 ### Library Code (`src/lib/`)
@@ -186,23 +193,35 @@ public/
    - Foil variants with visual effects
    - Complex effect DSL system
 
-3. **Pack Opening**
-   - Realistic booster simulation
-   - Configurable pack contents
+3. **Pack Opening** ✨
+   - Realistic booster simulation with proper RNG
+   - Configurable pack contents via database
    - Pity timer for rare cards
-   - Animated opening experience
+   - Epic animated opening experience with:
+     * 3D pack rotation and explosion effects
+     * Card reveal animations with face-down cards
+     * Screen shake for mythic/foil reveals
+     * Particle systems with rarity-based colors
+     * Hover effects with enhanced glow
+     * Click-to-reveal interaction
+     * Card zoom modal for detailed viewing
 
-4. **Collection Management**
-   - Personal card collection
-   - Collection statistics
-   - Card search and filtering
-   - Foil tracking
+4. **Collection Management** ✨
+   - Personal card collection with complete database integration
+   - Advanced search and filtering (name, type, rarity, foils)
+   - Collection statistics dashboard (unique cards, totals, rarity breakdown)
+   - Card detail modals with full information
+   - Rarity indicators and foil tracking
+   - Sort by name, rarity, acquisition date, or quantity
 
-5. **Deck Building**
-   - Visual deck builder interface
-   - Format validation
-   - Card quantity management
+5. **Deck Building** ✨
+   - Complete visual deck builder interface
+   - Full deck CRUD operations (create, read, update, delete)
+   - Format validation with real-time feedback
+   - Card quantity management with deck limits
    - Mainboard/sideboard support
+   - Deck list management with summary statistics
+   - Collection integration (only use owned cards)
 
 6. **Game Engine**
    - Turn-based structure
