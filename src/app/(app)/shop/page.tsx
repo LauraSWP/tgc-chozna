@@ -204,12 +204,55 @@ export default function ShopPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <PackOpeningAnimation
-            onOpenPack={handlePackOpen}
-            userCoins={userCurrency.coins}
-          />
+          <div className="space-y-6">
+            {/* Set Selection */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Set</label>
+              <select
+                value="BASE"
+                className="w-full border rounded-md px-3 py-2"
+                disabled
+              >
+                <option value="BASE">Base Set</option>
+              </select>
+            </div>
+
+            {/* Quantity Selection */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Cantidad (Cuesta: {formatCurrency(150)})
+              </label>
+              <div className="flex items-center gap-2">
+                <span className="w-12 text-center font-mono">1</span>
+              </div>
+            </div>
+
+            {/* Open Button */}
+            <button
+              onClick={() => {
+                // Trigger the pack opening animation
+                window.dispatchEvent(new CustomEvent('openPackAnimation'));
+              }}
+              disabled={userCurrency.coins < 150}
+              className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white font-bold py-4 px-6 rounded-lg text-lg shadow-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              🎴 ¡ABRIR SOBRE MÁGICO! 🎴
+            </button>
+
+            {userCurrency.coins < 150 && (
+              <p className="text-sm text-red-600 text-center">
+                ¡No tienes suficientes moneditas! Te faltan {formatCurrency(150 - userCurrency.coins)}.
+              </p>
+            )}
+          </div>
         </CardContent>
       </Card>
+
+      {/* Fullscreen Pack Opening Animation */}
+      <PackOpeningAnimation
+        onOpenPack={handlePackOpen}
+        userCoins={userCurrency.coins}
+      />
 
       {/* Shop Info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
