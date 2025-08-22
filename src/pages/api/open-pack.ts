@@ -1,24 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { getUser } from '@/lib/auth';
 import { validateInput, packOpenSchema } from '@/lib/validate';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  // Only allow POST
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-export async function POST(req: NextRequest) {
   try {
     // Authenticate user
     const user = await getUser();
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
     // Validate request body
-    const body = await req.json();
-    const validation = validateInput(packOpenSchema, body);
+    const validation = validateInput(packOpenSchema, req.body);
     
     if (!validation.success) {
-      return NextResponse.json({ error: validation.error }, { status: 400 });
+      return res.status(400).json({ error: validation.error });
     }
 
     const { set_code: setCode, quantity = 1 } = validation.data;
@@ -42,24 +46,18 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok) {
       const errorData = await response.json();
-      return NextResponse.json(
-        { error: errorData.error || 'Error al abrir sobres' },
-        { status: response.status }
-      );
+      return res.status(response.status).json({
+        error: errorData.error || 'Error al abrir sobres'
+      });
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return res.status(200).json(data);
 
   } catch (error) {
     console.error('Pack opening API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return res.status(500).json({
+      error: 'Internal server error'
+    });
   }
-}
-
-export async function GET() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
