@@ -95,7 +95,7 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
       
       // Trigger screen shake for epic reveals
       const card = openResults[0]?.cards[cardIndex];
-      if (card?.definition.rarity?.code === 'mythic' || card?.foil) {
+      if (card?.definition.rarity === 'mythic' || card?.foil) {
         setScreenShake(true);
         setTimeout(() => setScreenShake(false), 500);
       }
@@ -105,7 +105,7 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
         id: Date.now() + i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        type: card?.definition.rarity?.code || 'common'
+        type: card?.definition.rarity || 'common'
       }));
       setExplosionParticles(prev => [...prev, ...newParticles]);
       
@@ -581,10 +581,10 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
               {/* Enhanced glow based on rarity */}
               <div className={cn(
                 "absolute inset-[-20px] rounded-2xl opacity-60 animate-pulse",
-                openResults[0].cards[enlargedCard].definition.rarity?.code === 'mythic' && "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 shadow-2xl shadow-yellow-400/50",
-                openResults[0].cards[enlargedCard].definition.rarity?.code === 'rare' && "bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 shadow-2xl shadow-blue-400/50",
-                openResults[0].cards[enlargedCard].definition.rarity?.code === 'uncommon' && "bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 shadow-2xl shadow-green-400/50",
-                openResults[0].cards[enlargedCard].definition.rarity?.code === 'common' && "bg-gradient-to-r from-gray-400 via-gray-500 to-gray-400"
+                openResults[0].cards[enlargedCard].definition.rarity === 'mythic' && "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 shadow-2xl shadow-yellow-400/50",
+                openResults[0].cards[enlargedCard].definition.rarity === 'rare' && "bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 shadow-2xl shadow-blue-400/50",
+                openResults[0].cards[enlargedCard].definition.rarity === 'uncommon' && "bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 shadow-2xl shadow-green-400/50",
+                openResults[0].cards[enlargedCard].definition.rarity === 'common' && "bg-gradient-to-r from-gray-400 via-gray-500 to-gray-400"
               )} />
               
               <CardView
