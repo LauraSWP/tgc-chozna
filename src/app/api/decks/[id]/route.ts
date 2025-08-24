@@ -37,7 +37,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             id,
             card_def_id,
             foil,
-            card_definitions!inner(
+            card_definitions(
               id,
               name,
               mana_cost,
@@ -65,8 +65,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
            // Transform card definitions to match CardDefinition type
       const transformedCards = deckCards?.map(item => {
-        // Get the card definition (now it should be an object due to !inner join)
-        const cardDef = item.user_cards.card_definitions;
+        // Get the card definition (it's an array, so we take the first element)
+        const cardDef = item.user_cards.card_definitions?.[0];
         if (!cardDef) return item; // Return original item if no card definition found
         
         return {
