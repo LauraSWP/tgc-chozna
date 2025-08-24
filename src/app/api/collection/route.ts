@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
          const transformedDefinition = {
            id: cardDef.id,
            setCode: cardDef.card_sets?.[0]?.code || 'BASE',
-           externalCode: cardDef.external_code,
+           externalCode: cardDef.external_code || null,
            name: cardDef.name,
            rarity: cardDef.rarities?.[0]?.code || 'common',
            typeLine: cardDef.type_line,
