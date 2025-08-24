@@ -13,45 +13,45 @@ export async function GET(req: NextRequest) {
 
     const supabase = await createClient();
     
-    // Get user's complete collection with card details
-    const { data: userCards, error } = await supabase
-      .from('user_cards')
-      .select(`
-        id,
-        card_def_id,
-        foil,
-        acquired_at,
-        card_definitions(
-          id,
-          name,
-          mana_cost,
-          cmc,
-          type_line,
-          oracle_text,
-          flavor_text,
-          power,
-          toughness,
-          loyalty,
-          image_url,
-          rarity_id,
-          set_id,
-          artist,
-          created_at,
-          rarities(
-            id,
-            code,
-            display_name,
-            color
-          ),
-          card_sets(
-            id,
-            code,
-            name
-          )
-        )
-      `)
-      .eq('owner', user.id)
-      .order('acquired_at', { ascending: false });
+         // Get user's complete collection with card details
+     const { data: userCards, error } = await supabase
+       .from('user_cards')
+       .select(`
+         id,
+         card_def_id,
+         foil,
+         acquired_at,
+         card_definitions!inner(
+           id,
+           name,
+           mana_cost,
+           cmc,
+           type_line,
+           oracle_text,
+           flavor_text,
+           power,
+           toughness,
+           loyalty,
+           image_url,
+           rarity_id,
+           set_id,
+           artist,
+           created_at,
+           rarities(
+             id,
+             code,
+             display_name,
+             color
+           ),
+           card_sets(
+             id,
+             code,
+             name
+           )
+         )
+       `)
+       .eq('owner', user.id)
+       .order('acquired_at', { ascending: false });
 
     if (error) throw error;
 
@@ -61,26 +61,30 @@ export async function GET(req: NextRequest) {
      userCards?.forEach(userCard => {
        const key = userCard.card_def_id;
        if (!cardGroups.has(key)) {
+         // Get the card definition (now it should be an object due to !inner join)
+         const cardDef = userCard.card_definitions;
+         if (!cardDef) continue; // Skip if no card definition found
+         
          // Transform database fields to match CardDefinition type
          const transformedDefinition = {
-           id: userCard.card_definitions.id,
-           setCode: userCard.card_definitions.card_sets?.code || 'BASE',
-           externalCode: userCard.card_definitions.external_code,
-           name: userCard.card_definitions.name,
-           rarity: userCard.card_definitions.rarities?.code || 'common',
-           typeLine: userCard.card_definitions.type_line,
-           manaCost: userCard.card_definitions.mana_cost,
-           power: userCard.card_definitions.power,
-           toughness: userCard.card_definitions.toughness,
-           keywords: userCard.card_definitions.keywords || [],
-           rules: userCard.card_definitions.rules_json || {},
-           flavorText: userCard.card_definitions.flavor_text,
-           artist: userCard.card_definitions.artist,
-           imageUrl: userCard.card_definitions.image_url,
+           id: cardDef.id,
+           setCode: cardDef.card_sets?.code || 'BASE',
+           externalCode: cardDef.external_code,
+           name: cardDef.name,
+           rarity: cardDef.rarities?.code || 'common',
+           typeLine: cardDef.type_line,
+           manaCost: cardDef.mana_cost,
+           power: cardDef.power,
+           toughness: cardDef.toughness,
+           keywords: cardDef.keywords || [],
+           rules: cardDef.rules_json || {},
+           flavorText: cardDef.flavor_text,
+           artist: cardDef.artist,
+           imageUrl: cardDef.image_url,
            // Keep original database fields for compatibility
-           rarities: userCard.card_definitions.rarities,
-           card_sets: userCard.card_definitions.card_sets,
-           oracleText: userCard.card_definitions.oracle_text
+           rarities: cardDef.rarities,
+           card_sets: cardDef.card_sets,
+           oracleText: cardDef.oracle_text
          };
          
          cardGroups.set(key, {

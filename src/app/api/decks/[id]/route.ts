@@ -26,70 +26,76 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Deck not found' }, { status: 404 });
     }
 
-         // Get deck cards with full details
-     const { data: deckCards, error: cardsError } = await supabase
-       .from('deck_cards')
-       .select(`
-         user_card_id,
-         qty,
-         is_sideboard,
-         user_cards(
-           id,
-           card_def_id,
-           foil,
-           card_definitions(
-             id,
-             name,
-             mana_cost,
-             cmc,
-             type_line,
-             oracle_text,
-             power,
-             toughness,
-             image_url,
-             rarities(
-               code,
-               display_name,
-               color
-             ),
-             card_sets(
-               code,
-               name
-             )
-           )
-         )
-       `)
-       .eq('deck_id', params.id);
+                   // Get deck cards with full details
+      const { data: deckCards, error: cardsError } = await supabase
+        .from('deck_cards')
+        .select(`
+          user_card_id,
+          qty,
+          is_sideboard,
+          user_cards(
+            id,
+            card_def_id,
+            foil,
+            card_definitions!inner(
+              id,
+              name,
+              mana_cost,
+              cmc,
+              type_line,
+              oracle_text,
+              power,
+              toughness,
+              image_url,
+              rarities(
+                code,
+                display_name,
+                color
+              ),
+              card_sets(
+                code,
+                name
+              )
+            )
+          )
+        `)
+        .eq('deck_id', params.id);
 
      if (cardsError) throw cardsError;
 
-     // Transform card definitions to match CardDefinition type
-     const transformedCards = deckCards?.map(item => ({
-       ...item,
-       user_cards: {
-         ...item.user_cards,
-         card_definitions: {
-           id: item.user_cards.card_definitions.id,
-           setCode: item.user_cards.card_definitions.card_sets?.code || 'BASE',
-           externalCode: item.user_cards.card_definitions.external_code,
-           name: item.user_cards.card_definitions.name,
-           rarity: item.user_cards.card_definitions.rarities?.code || 'common',
-           typeLine: item.user_cards.card_definitions.type_line,
-           manaCost: item.user_cards.card_definitions.mana_cost,
-           power: item.user_cards.card_definitions.power,
-           toughness: item.user_cards.card_definitions.toughness,
-           keywords: item.user_cards.card_definitions.keywords || [],
-           rules: item.user_cards.card_definitions.rules_json || {},
-           flavorText: item.user_cards.card_definitions.flavor_text,
-           artist: item.user_cards.card_definitions.artist,
-           imageUrl: item.user_cards.card_definitions.image_url,
-           // Keep original database fields for compatibility
-           rarities: item.user_cards.card_definitions.rarities,
-           card_sets: item.user_cards.card_definitions.card_sets,
-           oracleText: item.user_cards.card_definitions.oracle_text
-         }
-       }
-     })) || [];
+           // Transform card definitions to match CardDefinition type
+      const transformedCards = deckCards?.map(item => {
+        // Get the card definition (now it should be an object due to !inner join)
+        const cardDef = item.user_cards.card_definitions;
+        if (!cardDef) return item; // Return original item if no card definition found
+        
+        return {
+          ...item,
+          user_cards: {
+            ...item.user_cards,
+            card_definitions: {
+              id: cardDef.id,
+              setCode: cardDef.card_sets?.code || 'BASE',
+              externalCode: cardDef.external_code,
+              name: cardDef.name,
+              rarity: cardDef.rarities?.code || 'common',
+              typeLine: cardDef.type_line,
+              manaCost: cardDef.mana_cost,
+              power: cardDef.power,
+              toughness: cardDef.toughness,
+              keywords: cardDef.keywords || [],
+              rules: cardDef.rules_json || {},
+              flavorText: cardDef.flavor_text,
+              artist: cardDef.artist,
+              imageUrl: cardDef.image_url,
+              // Keep original database fields for compatibility
+              rarities: cardDef.rarities,
+              card_sets: cardDef.card_sets,
+              oracleText: cardDef.oracle_text
+            }
+          }
+        };
+      }) || [];
 
     if (cardsError) throw cardsError;
 
