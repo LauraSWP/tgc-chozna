@@ -68,10 +68,10 @@ export async function GET(req: NextRequest) {
          // Transform database fields to match CardDefinition type
          const transformedDefinition = {
            id: cardDef.id,
-           setCode: cardDef.card_sets?.code || 'BASE',
+           setCode: cardDef.card_sets?.[0]?.code || 'BASE',
            externalCode: cardDef.external_code,
            name: cardDef.name,
-           rarity: cardDef.rarities?.code || 'common',
+           rarity: cardDef.rarities?.[0]?.code || 'common',
            typeLine: cardDef.type_line,
            manaCost: cardDef.mana_cost,
            power: cardDef.power,
@@ -82,8 +82,8 @@ export async function GET(req: NextRequest) {
            artist: cardDef.artist,
            imageUrl: cardDef.image_url,
            // Keep original database fields for compatibility
-           rarities: cardDef.rarities,
-           card_sets: cardDef.card_sets,
+           rarities: cardDef.rarities?.[0],
+           card_sets: cardDef.card_sets?.[0],
            oracleText: cardDef.oracle_text
          };
          
