@@ -213,6 +213,7 @@ public/
    - Card detail modals with full information
    - Rarity indicators and foil tracking
    - Sort by name, rarity, acquisition date, or quantity
+   - **Database Integration**: Complete API with proper field mapping and array handling
 
 5. **Deck Building** ✨
    - Complete visual deck builder interface
@@ -222,6 +223,7 @@ public/
    - Mainboard/sideboard support
    - Deck list management with summary statistics
    - Collection integration (only use owned cards)
+   - **Database Integration**: Complete API with proper field mapping and array handling
 
 6. **Game Engine**
    - Turn-based structure

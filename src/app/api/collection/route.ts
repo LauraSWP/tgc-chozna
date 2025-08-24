@@ -21,34 +21,37 @@ export async function GET(req: NextRequest) {
          card_def_id,
          foil,
          acquired_at,
-         card_definitions(
-           id,
-           name,
-           mana_cost,
-           cmc,
-           type_line,
-           oracle_text,
-           flavor_text,
-           power,
-           toughness,
-           loyalty,
-           image_url,
-           rarity_id,
-           set_id,
-           artist,
-           created_at,
-           rarities(
-             id,
-             code,
-             display_name,
-             color
-           ),
-           card_sets(
-             id,
-             code,
-             name
-           )
-         )
+                   card_definitions(
+            id,
+            name,
+            mana_cost,
+            cmc,
+            type_line,
+            oracle_text,
+            flavor_text,
+            power,
+            toughness,
+            loyalty,
+            image_url,
+            rarity_id,
+            set_id,
+            artist,
+            created_at,
+            external_code,
+            keywords,
+            rules_json,
+            rarities(
+              id,
+              code,
+              display_name,
+              color
+            ),
+            card_sets(
+              id,
+              code,
+              name
+            )
+          )
        `)
        .eq('owner', user.id)
        .order('acquired_at', { ascending: false });

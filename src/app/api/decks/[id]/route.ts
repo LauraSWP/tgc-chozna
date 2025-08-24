@@ -37,26 +37,31 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
             id,
             card_def_id,
             foil,
-            card_definitions(
-              id,
-              name,
-              mana_cost,
-              cmc,
-              type_line,
-              oracle_text,
-              power,
-              toughness,
-              image_url,
-              rarities(
-                code,
-                display_name,
-                color
-              ),
-              card_sets(
-                code,
-                name
-              )
-            )
+                         card_definitions(
+               id,
+               name,
+               mana_cost,
+               cmc,
+               type_line,
+               oracle_text,
+               power,
+               toughness,
+               image_url,
+               external_code,
+               keywords,
+               rules_json,
+               flavor_text,
+               artist,
+               rarities(
+                 code,
+                 display_name,
+                 color
+               ),
+               card_sets(
+                 code,
+                 name
+               )
+             )
           )
         `)
         .eq('deck_id', params.id);
