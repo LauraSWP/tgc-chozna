@@ -55,27 +55,49 @@ export async function GET(req: NextRequest) {
 
     if (error) throw error;
 
-    // Group cards by definition and count them
-    const cardGroups = new Map();
-    
-    userCards?.forEach(userCard => {
-      const key = userCard.card_def_id;
-      if (!cardGroups.has(key)) {
-        cardGroups.set(key, {
-          definition: userCard.card_definitions,
-          cards: [],
-          totalCount: 0,
-          foilCount: 0
-        });
-      }
-      
-      const group = cardGroups.get(key);
-      group.cards.push(userCard);
-      group.totalCount++;
-      if (userCard.foil) group.foilCount++;
-    });
+         // Group cards by definition and count them
+     const cardGroups = new Map();
+     
+     userCards?.forEach(userCard => {
+       const key = userCard.card_def_id;
+       if (!cardGroups.has(key)) {
+         // Transform database fields to match CardDefinition type
+         const transformedDefinition = {
+           id: userCard.card_definitions.id,
+           setCode: userCard.card_definitions.card_sets?.code || 'BASE',
+           externalCode: userCard.card_definitions.external_code,
+           name: userCard.card_definitions.name,
+           rarity: userCard.card_definitions.rarities?.code || 'common',
+           typeLine: userCard.card_definitions.type_line,
+           manaCost: userCard.card_definitions.mana_cost,
+           power: userCard.card_definitions.power,
+           toughness: userCard.card_definitions.toughness,
+           keywords: userCard.card_definitions.keywords || [],
+           rules: userCard.card_definitions.rules_json || {},
+           flavorText: userCard.card_definitions.flavor_text,
+           artist: userCard.card_definitions.artist,
+           imageUrl: userCard.card_definitions.image_url,
+           // Keep original database fields for compatibility
+           rarities: userCard.card_definitions.rarities,
+           card_sets: userCard.card_definitions.card_sets,
+           oracleText: userCard.card_definitions.oracle_text
+         };
+         
+         cardGroups.set(key, {
+           definition: transformedDefinition,
+           cards: [],
+           totalCount: 0,
+           foilCount: 0
+         });
+       }
+       
+       const group = cardGroups.get(key);
+       group.cards.push(userCard);
+       group.totalCount++;
+       if (userCard.foil) group.foilCount++;
+     });
 
-    const collection = Array.from(cardGroups.values());
+     const collection = Array.from(cardGroups.values());
 
     // Get collection summary statistics
     const { data: summary, error: summaryError } = await supabase

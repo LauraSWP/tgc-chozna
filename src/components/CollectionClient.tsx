@@ -1,5 +1,6 @@
 'use client';
 
+// Updated: Fixed property names to match CardDefinition type (typeLine, oracleText, manaCost, flavorText)
 import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,12 @@ interface UserCard {
 }
 
 interface CardGroup {
-  definition: CardDefinition;
+  definition: CardDefinition & {
+    // Additional database fields for compatibility
+    rarities?: any;
+    card_sets?: any;
+    oracleText?: string;
+  };
   cards: UserCard[];
   totalCount: number;
   foilCount: number;
@@ -77,12 +83,19 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
   const filteredCollection = useMemo(() => {
     let filtered = collection.filter(group => {
       const card = group.definition;
-      const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           card.type_line?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           card.oracle_text?.toLowerCase().includes(searchTerm.toLowerCase());
       
+      // Search filtering - use correct property names from CardDefinition type
+      const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (card.typeLine || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (card.oracleText || '').toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // Rarity filtering
       const matchesRarity = selectedRarity === 'all' || card.rarities?.code === selectedRarity;
-      const matchesType = selectedType === 'all' || card.type_line?.toLowerCase().includes(selectedType.toLowerCase());
+      
+      // Type filtering - use typeLine property
+      const matchesType = selectedType === 'all' || (card.typeLine || '').toLowerCase().includes(selectedType.toLowerCase());
+      
+      // Foil filtering
       const matchesFoil = !showFoilsOnly || group.foilCount > 0;
       
       return matchesSearch && matchesRarity && matchesType && matchesFoil;
@@ -339,11 +352,11 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
                 <div>
                   <h3 className="font-semibold mb-2">Card Details</h3>
                   <div className="space-y-2 text-sm">
-                    <div><strong>Type:</strong> {selectedCard.definition.type_line}</div>
+                    <div><strong>Type:</strong> {selectedCard.definition.typeLine}</div>
                     <div><strong>Rarity:</strong> {selectedCard.definition.rarities?.display_name}</div>
                     <div><strong>Set:</strong> {selectedCard.definition.card_sets?.name}</div>
-                    {selectedCard.definition.mana_cost && (
-                      <div><strong>Mana Cost:</strong> {selectedCard.definition.mana_cost}</div>
+                    {selectedCard.definition.manaCost && (
+                      <div><strong>Mana Cost:</strong> {selectedCard.definition.manaCost}</div>
                     )}
                     {selectedCard.definition.power !== null && selectedCard.definition.toughness !== null && (
                       <div><strong>P/T:</strong> {selectedCard.definition.power}/{selectedCard.definition.toughness}</div>
@@ -360,20 +373,20 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
                   </div>
                 </div>
                 
-                {selectedCard.definition.oracle_text && (
+                {selectedCard.definition.oracleText && (
                   <div>
                     <h3 className="font-semibold mb-2">Oracle Text</h3>
                     <p className="text-sm bg-gray-50 p-3 rounded">
-                      {selectedCard.definition.oracle_text}
+                      {selectedCard.definition.oracleText}
                     </p>
                   </div>
                 )}
                 
-                {selectedCard.definition.flavor_text && (
+                {selectedCard.definition.flavorText && (
                   <div>
                     <h3 className="font-semibold mb-2">Flavor Text</h3>
                     <p className="text-sm italic text-gray-600">
-                      "{selectedCard.definition.flavor_text}"
+                      "{selectedCard.definition.flavorText}"
                     </p>
                   </div>
                 )}

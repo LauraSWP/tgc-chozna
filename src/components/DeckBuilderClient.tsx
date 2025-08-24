@@ -11,7 +11,12 @@ interface UserCard {
   id: string;
   card_def_id: string;
   foil: boolean;
-  card_definitions: CardDefinition;
+  card_definitions: CardDefinition & {
+    // Additional database fields for compatibility
+    rarities?: any;
+    card_sets?: any;
+    oracleText?: string;
+  };
 }
 
 interface DeckCard {
