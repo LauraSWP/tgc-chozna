@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
        if (!cardGroups.has(key)) {
          // Get the card definition (now it should be an object due to !inner join)
          const cardDef = userCard.card_definitions;
-         if (!cardDef) continue; // Skip if no card definition found
+         if (!cardDef) return; // Skip if no card definition found
          
          // Transform database fields to match CardDefinition type
          const transformedDefinition = {
@@ -96,9 +96,11 @@ export async function GET(req: NextRequest) {
        }
        
        const group = cardGroups.get(key);
-       group.cards.push(userCard);
-       group.totalCount++;
-       if (userCard.foil) group.foilCount++;
+       if (group) {
+         group.cards.push(userCard);
+         group.totalCount++;
+         if (userCard.foil) group.foilCount++;
+       }
      });
 
      const collection = Array.from(cardGroups.values());
