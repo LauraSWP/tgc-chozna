@@ -71,7 +71,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
            // Transform card definitions to match CardDefinition type
       const transformedCards = deckCards?.map(item => {
                  // Get the card definition (it's an array, so we take the first element)
-         const cardDef = item.user_cards?.[0]?.card_definitions?.[0];
+         const userCard = Array.isArray(item.user_cards) ? item.user_cards[0] : item.user_cards;
+         const cardDef = userCard?.card_definitions?.[0];
         if (!cardDef) return item; // Return original item if no card definition found
         
         return {
