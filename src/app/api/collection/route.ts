@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
            return; // Skip if no card definition found
          }
          
-         console.log('Processing card definition:', cardDef.name, 'with rarities:', cardDef.rarities);
+                   console.log('Processing card definition:', cardDef.name);
          
                             // Transform database fields to match CardDefinition type
          const transformedDefinition = {
