@@ -203,7 +203,7 @@ const CardView: React.FC<CardViewProps> = ({
           </div>
 
           {/* Power/Toughness for creatures */}
-          {card.power !== undefined && card.toughness !== undefined && (
+          {(card.power !== undefined && card.power !== null) && (card.toughness !== undefined && card.toughness !== null) && (
             <div className="absolute bottom-2 right-2">
               <PowerToughnessDisplay
                 power={card.power}

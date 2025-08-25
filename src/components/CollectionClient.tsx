@@ -392,7 +392,8 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
                         </div>
                       </div>
                     )}
-                    {selectedCard.definition.power !== null && selectedCard.definition.toughness !== null && (
+                    {(selectedCard.definition.power !== null && selectedCard.definition.power !== undefined) && 
+                     (selectedCard.definition.toughness !== null && selectedCard.definition.toughness !== undefined) && (
                       <div className="flex items-center gap-2">
                         <strong>{ES_TRANSLATIONS.ui.powerToughness}:</strong>
                         <PowerToughnessDisplay

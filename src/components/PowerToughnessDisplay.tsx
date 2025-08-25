@@ -3,8 +3,8 @@
 import React from 'react';
 
 interface PowerToughnessDisplayProps {
-  power: number | null;
-  toughness: number | null;
+  power: number | null | undefined;
+  toughness: number | null | undefined;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
@@ -15,7 +15,7 @@ const PowerToughnessDisplay: React.FC<PowerToughnessDisplayProps> = ({
   size = 'md',
   className = '' 
 }) => {
-  if (power === null || toughness === null) {
+  if (power === null || power === undefined || toughness === null || toughness === undefined) {
     return null;
   }
 
