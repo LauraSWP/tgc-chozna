@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CardView from '@/components/CardView';
-import CardEditor from '@/components/admin/CardEditor';
+import CardEditorNew from '@/components/admin/CardEditorNew';
 import { supabase } from '@/lib/supabaseClient';
 import { cn, getRarityColor } from '@/lib/utils';
 import type { CardDefinition } from '@/lib/game/types';
@@ -132,7 +132,7 @@ const CardManagementClient: React.FC<CardManagementClientProps> = ({ initialCard
 
   if (showEditor) {
     return (
-      <CardEditor
+      <CardEditorNew
         cardId={editingCard || undefined}
         onSave={handleCardSaved}
         onCancel={() => {

@@ -56,7 +56,7 @@ const CardView: React.FC<CardViewProps> = ({
   const handleCardClick = () => {
     if (interactive && onClick) {
       onClick();
-    } else if (interactive) {
+    } else if (interactive && !showExpanded) {
       setShowExpanded(true);
     }
   };
@@ -98,8 +98,8 @@ const CardView: React.FC<CardViewProps> = ({
           selected && 'ring-2 ring-blue-500 ring-offset-2',
           foil && 'foil-effect glow-foil',
           `card-rarity-${card.rarity}`,
-          card.rarity === 'mythic' && 'glow-mythic mythic-aura',
-          card.rarity === 'rare' && 'glow-rare rare-shimmer',
+          card.rarity === 'mythic' && 'glow-mythic',
+          card.rarity === 'rare' && 'glow-rare',
           card.rarity === 'uncommon' && 'glow-uncommon',
           className
         )}
@@ -170,7 +170,7 @@ const CardView: React.FC<CardViewProps> = ({
           </div>
 
           {/* Oracle text area */}
-          <div className="flex-1 bg-white rounded border border-gray-300 p-2 overflow-hidden">
+          <div className="flex-1 bg-white rounded border border-gray-300 p-2 overflow-hidden relative">
             {/* Keywords with tooltips */}
             {keywords.length > 0 && (
               <div className={`mb-2 ${textSizes[size].rules}`}>
@@ -194,24 +194,24 @@ const CardView: React.FC<CardViewProps> = ({
             
             {/* Flavor text integrated within card */}
             {card.flavorText && (size === 'large' || size === 'xl') && (
-              <div className="border-t border-gray-200 pt-2 mt-2">
+              <div className="border-t border-gray-200 pt-2 mt-2 mb-8">
                 <p className={`text-gray-600 italic leading-tight ${textSizes[size].flavor}`}>
                   <em>"{card.flavorText}"</em>
                 </p>
               </div>
             )}
-          </div>
 
-          {/* Power/Toughness for creatures */}
-          {(card.power !== undefined && card.power !== null) && (card.toughness !== undefined && card.toughness !== null) && (
-            <div className="absolute bottom-2 right-2">
-              <PowerToughnessDisplay
-                power={card.power}
-                toughness={card.toughness}
-                size={size === 'small' ? 'sm' : size === 'xl' ? 'lg' : 'md'}
-              />
-            </div>
-          )}
+            {/* Power/Toughness for creatures - moved inside text area to avoid overlap */}
+            {(card.power !== undefined && card.power !== null) && (card.toughness !== undefined && card.toughness !== null) && (
+              <div className="absolute bottom-2 right-2">
+                <PowerToughnessDisplay
+                  power={card.power}
+                  toughness={card.toughness}
+                  size={size === 'small' ? 'sm' : size === 'xl' ? 'lg' : 'md'}
+                />
+              </div>
+            )}
+          </div>
 
           {/* Foil indicator */}
           {foil && (

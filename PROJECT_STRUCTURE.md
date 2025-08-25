@@ -70,9 +70,13 @@ src/components/
 │   ├── card.tsx            # Card container component
 │   └── ...                 # Other UI primitives
 ├── admin/                   # Admin-specific components
-│   ├── CardEditor.tsx      # Card creation/editing interface
+│   ├── CardEditor.tsx      # Legacy card creation/editing interface
+│   ├── CardEditorNew.tsx   # New overhauled card creation with visual builders
 │   ├── CardManagementClient.tsx # Card management interface
 │   ├── CardPreview.tsx     # Card preview component
+│   ├── CardPreviewLarge.tsx # Large live preview with real-time updates
+│   ├── ManaCostBuilder.tsx # Visual mana cost builder with icons
+│   ├── EffectsBuilder.tsx  # Comprehensive effects builder (ON PLAY -> IF -> WHAT)
 │   └── UserManagementClient.tsx # User management interface
 ├── AppNavigation.tsx       # Main app navigation bar
 ├── CardView.tsx           # Individual card display
@@ -80,7 +84,11 @@ src/components/
 ├── PackOpeningAnimation.tsx # Epic pack opening with 3D effects & particles
 ├── CollectionClient.tsx   # Collection viewing with search, filters & stats
 ├── DeckBuilderClient.tsx  # Complete deck management interface
-└── DeckBuilder.tsx        # Core deck building logic component
+├── DeckBuilder.tsx        # Core deck building logic component
+├── ManaSymbol.tsx         # Enhanced mana symbol display with proper icons
+├── PowerToughnessDisplay.tsx # Power/toughness display with sword/shield icons
+├── KeywordTooltip.tsx     # Tooltip system for mechanics with Spanish explanations
+└── MechanicsSelector.tsx  # Visual mechanics selector for card creation
 ```
 
 ### Library Code (`src/lib/`)
@@ -97,8 +105,12 @@ src/lib/
 │   │   └── rules.ts       # Rule enforcement
 │   ├── effects/           # Card effect implementations
 │   │   └── index.ts       # All effect operations
+│   ├── effectEngine.ts    # Real effect execution engine for gameplay
+│   ├── mechanics.ts       # Complete mechanics system with actual effects
 │   ├── types.ts           # Game type definitions
 │   └── constants.ts       # Game constants and rules
+├── localization/          # Internationalization
+│   └── es.ts              # Spanish translations and keyword mechanics
 ├── db/                    # Database interaction
 │   ├── queries.ts         # Typed database queries
 │   └── policy.ts          # RLS policy utilities

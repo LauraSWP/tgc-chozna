@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { getKeywordExplanation } from '@/lib/localization/es';
+import { getMechanic } from '@/lib/game/mechanics';
 
 interface KeywordTooltipProps {
   keyword: string;
@@ -11,9 +11,9 @@ interface KeywordTooltipProps {
 
 const KeywordTooltip: React.FC<KeywordTooltipProps> = ({ keyword, children, className = '' }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const keywordData = getKeywordExplanation(keyword);
+  const mechanic = getMechanic(keyword.toLowerCase().replace(/\s+/g, '_'));
 
-  if (!keywordData) {
+  if (!mechanic) {
     return <span className={className}>{children}</span>;
   }
 
@@ -34,10 +34,27 @@ const KeywordTooltip: React.FC<KeywordTooltipProps> = ({ keyword, children, clas
           <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 border-l border-t border-gray-700 rotate-45"></div>
           
           <div className="font-bold text-yellow-400 mb-1">
-            {keywordData.name}
+            {mechanic.nameES}
           </div>
           <div className="text-gray-200 leading-relaxed">
-            {keywordData.description}
+            {mechanic.descriptionES}
+          </div>
+          
+          {/* Show mechanic category and type */}
+          <div className="mt-2 pt-2 border-t border-gray-600">
+            <div className="text-xs text-gray-400">
+              <span className="font-semibold">Tipo:</span> {mechanic.type === 'static' ? 'Estático' : 
+                mechanic.type === 'triggered' ? 'Disparado' : 
+                mechanic.type === 'activated' ? 'Activado' : 'Reemplazo'}
+            </div>
+            <div className="text-xs text-gray-400">
+              <span className="font-semibold">Categoría:</span> {
+                mechanic.category === 'evasion' ? 'Evasión' :
+                mechanic.category === 'combat' ? 'Combate' :
+                mechanic.category === 'utility' ? 'Utilidad' :
+                mechanic.category === 'protection' ? 'Protección' : 'Tempo'
+              }
+            </div>
           </div>
         </div>
       )}

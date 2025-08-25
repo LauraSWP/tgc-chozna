@@ -4,11 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import MechanicsSelector from '@/components/MechanicsSelector';
+import ManaCostBuilder from '@/components/admin/ManaCostBuilder';
+import CardPreviewLarge from '@/components/admin/CardPreviewLarge';
+import EffectsBuilder from '@/components/admin/EffectsBuilder';
 import { supabase } from '@/lib/supabaseClient';
 import { validateCardRules, validateManaCost } from '@/lib/validate';
 import { cn } from '@/lib/utils';
 import type { CardDefinition } from '@/lib/game/types';
-import CardPreview from '@/components/admin/CardPreview';
 
 interface CardEditorProps {
   cardId?: string;
@@ -58,12 +61,10 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
   const [sets, setSets] = useState<any[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [keywordInput, setKeywordInput] = useState('');
-  const [rulesInput, setRulesInput] = useState('{}');
+
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [manaCostBuilder, setManaCostBuilder] = useState<string[]>([]);
 
   useEffect(() => {
     loadReferenceData();
@@ -72,37 +73,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
     }
   }, [cardId]);
 
-  useEffect(() => {
-    // Parse existing mana cost into builder array
-    if (form.mana_cost) {
-      const symbols = form.mana_cost.match(/\{[^}]+\}/g) || [];
-      setManaCostBuilder(symbols.map(s => s.slice(1, -1)));
-    }
-  }, [form.mana_cost]);
 
-  // Mana cost builder functions
-  const addManaSymbol = (symbol: string) => {
-    const newCost = [...manaCostBuilder, symbol];
-    setManaCostBuilder(newCost);
-    setForm(prev => ({ 
-      ...prev, 
-      mana_cost: newCost.map(s => `{${s}}`).join('') 
-    }));
-  };
-
-  const removeManaSymbol = (index: number) => {
-    const newCost = manaCostBuilder.filter((_, i) => i !== index);
-    setManaCostBuilder(newCost);
-    setForm(prev => ({ 
-      ...prev, 
-      mana_cost: newCost.map(s => `{${s}}`).join('') 
-    }));
-  };
-
-  const clearManaCost = () => {
-    setManaCostBuilder([]);
-    setForm(prev => ({ ...prev, mana_cost: '' }));
-  };
 
   const loadReferenceData = async () => {
     try {
@@ -230,22 +201,7 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
     }
   };
 
-  const addKeyword = () => {
-    if (keywordInput.trim() && !form.keywords.includes(keywordInput.trim())) {
-      setForm(prev => ({
-        ...prev,
-        keywords: [...prev.keywords, keywordInput.trim()]
-      }));
-      setKeywordInput('');
-    }
-  };
 
-  const removeKeyword = (keyword: string) => {
-    setForm(prev => ({
-      ...prev,
-      keywords: prev.keywords.filter(k => k !== keyword)
-    }));
-  };
 
   const addBasicEffect = (effectType: string) => {
     let newEffect = {};
@@ -400,16 +356,20 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">
-            {cardId ? '✏️ Editar Carta' : '🆕 Crear Nueva Carta'}
-          </CardTitle>
-          <CardDescription className="text-lg">
-            {cardId ? 'Modifica una carta existente' : 'Crea una nueva carta para el juego'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Left column - Form */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">
+                {cardId ? '✏️ Editar Carta' : '🆕 Crear Nueva Carta'}
+              </CardTitle>
+              <CardDescription className="text-lg">
+                {cardId ? 'Modifica una carta existente' : 'Crea una nueva carta para el juego'}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
           {/* Main Layout: Image Preview + Form */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             {/* Left Column: Large Image Preview */}
@@ -765,46 +725,15 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
             </div>
           </div>
 
-          {/* Keywords Section */}
+          {/* Mechanics Section */}
           <div className="space-y-4 bg-green-50 p-6 rounded-lg border">
-            <h4 className="font-semibold text-lg flex items-center gap-2">
-              🏷️ Palabras Clave
-              <span className="text-xs text-gray-500 ml-2">(Habilidades especiales de la carta)</span>
-            </h4>
-            
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={keywordInput}
-                onChange={(e) => setKeywordInput(e.target.value)}
-                className="flex-1 border rounded-md px-3 py-2"
-                placeholder="volar, prisa, vigilancia, etc."
-                onKeyPress={(e) => e.key === 'Enter' && addKeyword()}
-              />
-              <Button onClick={addKeyword} type="button" variant="outline">
-                ➕ Añadir
-              </Button>
-            </div>
-            
-            <div className="flex flex-wrap gap-2">
-              {form.keywords.map(keyword => (
-                <span
-                  key={keyword}
-                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm flex items-center gap-1"
-                >
-                  {keyword}
-                  <button
-                    onClick={() => removeKeyword(keyword)}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
+            <MechanicsSelector
+              selectedMechanics={form.keywords}
+              onMechanicsChange={(mechanics) => setForm(prev => ({ ...prev, keywords: mechanics }))}
+            />
             
             <div className="text-xs text-gray-500 bg-white p-3 rounded border">
-              💡 <strong>Tip:</strong> Las palabras clave son habilidades especiales como "volar" (no puede ser bloqueada), "prisa" (puede atacar inmediatamente), etc.
+              💡 <strong>Tip:</strong> Las mecánicas son habilidades con efectos reales en el juego. Cada mecánica seleccionada funcionará automáticamente durante las partidas.
             </div>
           </div>
 
