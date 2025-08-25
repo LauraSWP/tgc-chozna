@@ -65,37 +65,37 @@ export async function GET(req: NextRequest) {
      
      userCards?.forEach(userCard => {
        const key = userCard.card_def_id;
-       if (!cardGroups.has(key)) {
-         // Get the card definition (it's an object, not an array)
-         const cardDef = userCard.card_definitions;
-         if (!cardDef) {
-           console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
-           return; // Skip if no card definition found
-         }
+               if (!cardGroups.has(key)) {
+          // Get the card definition (it's an array, so we take the first element)
+          const cardDef = userCard.card_definitions?.[0];
+          if (!cardDef) {
+            console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
+            return; // Skip if no card definition found
+          }
+          
+          console.log('Processing card definition:', cardDef.name, 'with rarities:', cardDef.rarities);
          
-         console.log('Processing card definition:', cardDef.name, 'with rarities:', cardDef.rarities);
-         
-         // Transform database fields to match CardDefinition type
-         const transformedDefinition = {
-           id: cardDef.id,
-           setCode: cardDef.card_sets?.code || 'BASE',
-           externalCode: cardDef.external_code || null,
-           name: cardDef.name,
-           rarity: cardDef.rarities?.code || 'common',
-           typeLine: cardDef.type_line,
-           manaCost: cardDef.mana_cost,
-           power: cardDef.power,
-           toughness: cardDef.toughness,
-           keywords: cardDef.keywords || [],
-           rules: cardDef.rules_json || {},
-           flavorText: cardDef.flavor_text,
-           artist: cardDef.artist,
-           imageUrl: cardDef.image_url,
-           // Keep original database fields for compatibility
-           rarities: cardDef.rarities || { code: 'common', display_name: 'Common' },
-           card_sets: cardDef.card_sets || { code: 'BASE', name: 'Base Set' },
-           oracleText: null // oracle_text field doesn't exist in database
-         };
+                   // Transform database fields to match CardDefinition type
+          const transformedDefinition = {
+            id: cardDef.id,
+            setCode: cardDef.card_sets?.[0]?.code || 'BASE',
+            externalCode: cardDef.external_code || null,
+            name: cardDef.name,
+            rarity: cardDef.rarities?.[0]?.code || 'common',
+            typeLine: cardDef.type_line,
+            manaCost: cardDef.mana_cost,
+            power: cardDef.power,
+            toughness: cardDef.toughness,
+            keywords: cardDef.keywords || [],
+            rules: cardDef.rules_json || {},
+            flavorText: cardDef.flavor_text,
+            artist: cardDef.artist,
+            imageUrl: cardDef.image_url,
+            // Keep original database fields for compatibility
+            rarities: cardDef.rarities?.[0] || { code: 'common', display_name: 'Common' },
+            card_sets: cardDef.card_sets?.[0] || { code: 'BASE', name: 'Base Set' },
+            oracleText: null // oracle_text field doesn't exist in database
+          };
          
          cardGroups.set(key, {
            definition: transformedDefinition,
