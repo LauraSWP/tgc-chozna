@@ -17,6 +17,16 @@ export async function GET(req: NextRequest) {
     console.log('Fetching collection for user:', user.id);
     const supabase = await createClient();
     
+    // Debug: Check if there are any card definitions at all
+    const { data: totalCardDefs, error: totalDefsError } = await supabase
+      .from('card_definitions')
+      .select('id', { count: 'exact' });
+    
+    console.log('Total card definitions in database:', totalCardDefs?.length || 0);
+    if (totalDefsError) {
+      console.error('Error checking total card definitions:', totalDefsError);
+    }
+    
                   // Get user's complete collection with card details
       const { data: userCards, error } = await supabase
         .from('user_cards')
@@ -25,7 +35,7 @@ export async function GET(req: NextRequest) {
           card_def_id,
           foil,
           acquired_at,
-          card_definitions!inner(
+          card_definitions(
              id,
              name,
              mana_cost,
@@ -50,7 +60,19 @@ export async function GET(req: NextRequest) {
       throw error;
     }
 
-         console.log('Found user cards:', userCards?.length || 0);
+    console.log('Found user cards:', userCards?.length || 0);
+    
+    // Debug: Check for orphaned cards
+    if (userCards && userCards.length > 0) {
+      const orphanedCards = userCards.filter(card => !card.card_definitions || card.card_definitions.length === 0);
+      console.log('Orphaned cards (no card definition):', orphanedCards.length);
+      if (orphanedCards.length > 0) {
+        console.log('Sample orphaned card:', orphanedCards[0]);
+      }
+      
+      const validCards = userCards.filter(card => card.card_definitions && card.card_definitions.length > 0);
+      console.log('Valid cards (with card definition):', validCards.length);
+    }
 
      // Test: Get a sample of card definitions to see if they exist
      if (userCards && userCards.length > 0) {
@@ -82,6 +104,7 @@ export async function GET(req: NextRequest) {
          const cardDef = userCard.card_definitions?.[0];
          if (!cardDef) {
            console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
+           // Skip orphaned cards for now, but we should clean them up later
            return; // Skip if no card definition found
          }
          

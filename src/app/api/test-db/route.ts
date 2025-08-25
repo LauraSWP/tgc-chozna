@@ -11,51 +11,54 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('Testing DB connection for user:', user.id);
     const supabase = await createClient();
     
-    // Test basic user_cards query
-    const { data: userCards, error: cardsError } = await supabase
+    // Test 1: Get all user cards
+    const { data: allUserCards, error: userCardsError } = await supabase
       .from('user_cards')
       .select('id, card_def_id, foil')
-      .eq('owner', user.id)
-      .limit(5);
+      .eq('owner', user.id);
 
-    if (cardsError) {
-      console.error('Error fetching user cards:', cardsError);
-      return NextResponse.json({ 
-        error: 'Database error', 
-        details: cardsError.message 
-      }, { status: 500 });
+    if (userCardsError) {
+      return NextResponse.json({ error: 'Error fetching user cards', details: userCardsError }, { status: 500 });
     }
 
-    // Test card_definitions query
-    const { data: cardDefs, error: defsError } = await supabase
+    // Test 2: Check for orphaned cards
+    const orphanedCards = [];
+    const validCards = [];
+    
+    for (const userCard of allUserCards || []) {
+      const { data: cardDef, error: cardDefError } = await supabase
+        .from('card_definitions')
+        .select('id, name')
+        .eq('id', userCard.card_def_id)
+        .single();
+      
+      if (cardDefError || !cardDef) {
+        orphanedCards.push(userCard);
+      } else {
+        validCards.push({ ...userCard, cardDefinition: cardDef });
+      }
+    }
+
+    // Test 3: Get some sample card definitions
+    const { data: sampleCardDefs, error: sampleError } = await supabase
       .from('card_definitions')
-      .select('id, name')
+      .select('id, name, set_id')
       .limit(5);
-
-    if (defsError) {
-      console.error('Error fetching card definitions:', defsError);
-      return NextResponse.json({ 
-        error: 'Database error', 
-        details: defsError.message 
-      }, { status: 500 });
-    }
 
     return NextResponse.json({
-      success: true,
-      userCards: userCards?.length || 0,
-      sampleUserCards: userCards,
-      cardDefs: cardDefs?.length || 0,
-      sampleCardDefs: cardDefs
+      totalUserCards: allUserCards?.length || 0,
+      orphanedCards: orphanedCards.length,
+      validCards: validCards.length,
+      orphanedCardIds: orphanedCards.map(c => c.card_def_id),
+      sampleValidCards: validCards.slice(0, 5),
+      sampleCardDefinitions: sampleCardDefs,
+      userId: user.id
     });
 
   } catch (error) {
-    console.error('Error in test endpoint:', error);
-    return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    console.error('Test DB error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
