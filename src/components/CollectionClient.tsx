@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import CardView from '@/components/CardView';
 import { cn } from '@/lib/utils';
+import { ES_TRANSLATIONS, translateCardType, translateRarity } from '@/lib/localization/es';
+import ManaSymbol from '@/components/ManaSymbol';
+import PowerToughnessDisplay from '@/components/PowerToughnessDisplay';
 import type { CardDefinition } from '@/lib/game/types';
 
 interface UserCard {
@@ -175,7 +178,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
       <div className="space-y-6">
         <div className="text-center py-12">
           <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p>Loading your collection...</p>
+          <p>{ES_TRANSLATIONS.ui.loadingCollection}</p>
         </div>
       </div>
     );
@@ -189,7 +192,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
           <CardContent className="pt-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">{summaryStats.totalUnique}</div>
-              <div className="text-sm text-gray-600">Unique Cards</div>
+              <div className="text-sm text-gray-600">{ES_TRANSLATIONS.ui.uniqueCards}</div>
             </div>
           </CardContent>
         </Card>
@@ -198,7 +201,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
           <CardContent className="pt-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">{summaryStats.totalCards}</div>
-              <div className="text-sm text-gray-600">Total Cards</div>
+              <div className="text-sm text-gray-600">{ES_TRANSLATIONS.ui.totalCards}</div>
             </div>
           </CardContent>
         </Card>
@@ -207,7 +210,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
           <CardContent className="pt-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600">{summaryStats.totalFoils}</div>
-              <div className="text-sm text-gray-600">Foil Cards</div>
+              <div className="text-sm text-gray-600">{ES_TRANSLATIONS.ui.foilCards}</div>
             </div>
           </CardContent>
         </Card>
@@ -218,7 +221,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
               <div className="text-2xl font-bold text-orange-600">
                 {summaryStats.byRarity.mythic?.count || 0}
               </div>
-              <div className="text-sm text-gray-600">Mythic Cards</div>
+              <div className="text-sm text-gray-600">{ES_TRANSLATIONS.ui.mythicCards}</div>
             </div>
           </CardContent>
         </Card>
@@ -230,7 +233,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <input
               type="text"
-              placeholder="Search cards..."
+              placeholder={ES_TRANSLATIONS.ui.searchCards}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="border rounded-md px-3 py-2"
@@ -241,12 +244,12 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
               onChange={(e) => setSelectedRarity(e.target.value)}
               className="border rounded-md px-3 py-2"
             >
-              <option value="all">All Rarities</option>
-              <option value="common">Common</option>
-              <option value="uncommon">Uncommon</option>
-              <option value="rare">Rare</option>
-              <option value="mythic">Mythic</option>
-              <option value="land">Land</option>
+              <option value="all">{ES_TRANSLATIONS.ui.allRarities}</option>
+              <option value="common">{ES_TRANSLATIONS.rarities.common}</option>
+              <option value="uncommon">{ES_TRANSLATIONS.rarities.uncommon}</option>
+              <option value="rare">{ES_TRANSLATIONS.rarities.rare}</option>
+              <option value="mythic">{ES_TRANSLATIONS.rarities.mythic}</option>
+              <option value="land">{ES_TRANSLATIONS.rarities.land}</option>
             </select>
             
             <select
@@ -254,13 +257,13 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
               onChange={(e) => setSelectedType(e.target.value)}
               className="border rounded-md px-3 py-2"
             >
-              <option value="all">All Types</option>
-              <option value="creature">Creatures</option>
-              <option value="instant">Instants</option>
-              <option value="sorcery">Sorceries</option>
-              <option value="artifact">Artifacts</option>
-              <option value="enchantment">Enchantments</option>
-              <option value="land">Lands</option>
+              <option value="all">{ES_TRANSLATIONS.ui.allTypes}</option>
+              <option value="creature">{ES_TRANSLATIONS.cardTypes.creature}s</option>
+              <option value="instant">{ES_TRANSLATIONS.cardTypes.instant}s</option>
+              <option value="sorcery">{ES_TRANSLATIONS.cardTypes.sorcery}s</option>
+              <option value="artifact">{ES_TRANSLATIONS.cardTypes.artifact}s</option>
+              <option value="enchantment">{ES_TRANSLATIONS.cardTypes.enchantment}s</option>
+              <option value="land">{ES_TRANSLATIONS.cardTypes.land}s</option>
             </select>
             
             <select
@@ -268,10 +271,10 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
               onChange={(e) => setSortBy(e.target.value as any)}
               className="border rounded-md px-3 py-2"
             >
-              <option value="name">Sort by Name</option>
-              <option value="rarity">Sort by Rarity</option>
-              <option value="acquired">Sort by Acquired</option>
-              <option value="count">Sort by Count</option>
+              <option value="name">{ES_TRANSLATIONS.ui.sortByName}</option>
+              <option value="rarity">{ES_TRANSLATIONS.ui.sortByRarity}</option>
+              <option value="acquired">{ES_TRANSLATIONS.ui.sortByAcquired}</option>
+              <option value="count">{ES_TRANSLATIONS.ui.sortByCount}</option>
             </select>
             
             <label className="flex items-center gap-2 px-3 py-2">
@@ -280,7 +283,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
                 checked={showFoilsOnly}
                 onChange={(e) => setShowFoilsOnly(e.target.checked)}
               />
-              <span className="text-sm">Foils Only ✨</span>
+              <span className="text-sm">{ES_TRANSLATIONS.ui.foilsOnly} ✨</span>
             </label>
           </div>
         </CardContent>
@@ -290,20 +293,20 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
       <Card>
         <CardHeader>
           <CardTitle>
-            Your Collection ({filteredCollection.length} cards)
+            {ES_TRANSLATIONS.ui.yourCollection} ({filteredCollection.length} cartas)
           </CardTitle>
         </CardHeader>
         <CardContent>
           {filteredCollection.length === 0 ? (
             <div className="text-center py-12">
               <div className="text-6xl mb-4">📦</div>
-              <h3 className="text-xl font-semibold mb-2">No cards found</h3>
+              <h3 className="text-xl font-semibold mb-2">{ES_TRANSLATIONS.ui.noCardsFound}</h3>
               <p className="text-gray-600">
-                Try adjusting your filters or open some packs in the shop!
+                {ES_TRANSLATIONS.ui.tryAdjustingFilters}
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredCollection.map((group) => (
                 <div
                   key={group.definition.id}
@@ -313,7 +316,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
                   <CardView
                     card={group.definition}
                     foil={group.foilCount > 0}
-                    size="small"
+                    size="medium"
                     interactive
                     className="transition-transform hover:scale-105"
                   />
@@ -349,7 +352,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
           onClick={() => setSelectedCard(null)}
         >
           <div 
-            className="bg-white rounded-lg p-6 max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg p-6 max-w-4xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-start mb-4">
@@ -374,41 +377,55 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
               
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Card Details</h3>
+                  <h3 className="font-semibold mb-2">{ES_TRANSLATIONS.ui.cardDetails}</h3>
                   <div className="space-y-2 text-sm">
-                    <div><strong>Type:</strong> {selectedCard.definition.typeLine}</div>
-                    <div><strong>Rarity:</strong> {selectedCard.definition.rarities?.display_name}</div>
-                    <div><strong>Set:</strong> {selectedCard.definition.card_sets?.name}</div>
+                    <div><strong>{ES_TRANSLATIONS.ui.type}:</strong> {translateCardType(selectedCard.definition.typeLine || '')}</div>
+                    <div><strong>{ES_TRANSLATIONS.ui.rarity}:</strong> {translateRarity(selectedCard.definition.rarity)}</div>
+                    <div><strong>{ES_TRANSLATIONS.ui.set}:</strong> {selectedCard.definition.card_sets?.name}</div>
                     {selectedCard.definition.manaCost && (
-                      <div><strong>Mana Cost:</strong> {selectedCard.definition.manaCost}</div>
+                      <div className="flex items-center gap-2">
+                        <strong>{ES_TRANSLATIONS.ui.manaCost}:</strong>
+                        <div className="flex gap-1">
+                          {(selectedCard.definition.manaCost.match(/\{[^}]+\}/g) || []).map((symbol, index) => (
+                            <ManaSymbol key={index} symbol={symbol.replace(/[{}]/g, '')} size="sm" />
+                          ))}
+                        </div>
+                      </div>
                     )}
                     {selectedCard.definition.power !== null && selectedCard.definition.toughness !== null && (
-                      <div><strong>P/T:</strong> {selectedCard.definition.power}/{selectedCard.definition.toughness}</div>
+                      <div className="flex items-center gap-2">
+                        <strong>{ES_TRANSLATIONS.ui.powerToughness}:</strong>
+                        <PowerToughnessDisplay
+                          power={selectedCard.definition.power}
+                          toughness={selectedCard.definition.toughness}
+                          size="sm"
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
                 
                 <div>
-                  <h3 className="font-semibold mb-2">Your Copies</h3>
+                  <h3 className="font-semibold mb-2">{ES_TRANSLATIONS.ui.yourCopies}</h3>
                   <div className="space-y-2 text-sm">
-                    <div><strong>Total:</strong> {selectedCard.totalCount} copies</div>
-                    <div><strong>Foils:</strong> {selectedCard.foilCount} copies ✨</div>
-                    <div><strong>Regular:</strong> {selectedCard.totalCount - selectedCard.foilCount} copies</div>
+                    <div><strong>{ES_TRANSLATIONS.ui.total}:</strong> {selectedCard.totalCount} {ES_TRANSLATIONS.ui.copies}</div>
+                    <div><strong>{ES_TRANSLATIONS.ui.foils}:</strong> {selectedCard.foilCount} {ES_TRANSLATIONS.ui.copies} ✨</div>
+                    <div><strong>{ES_TRANSLATIONS.ui.regular}:</strong> {selectedCard.totalCount - selectedCard.foilCount} {ES_TRANSLATIONS.ui.copies}</div>
                   </div>
                 </div>
                 
-                {selectedCard.definition.oracleText && (
+                {(selectedCard.definition as any).oracleText && (
                   <div>
-                    <h3 className="font-semibold mb-2">Oracle Text</h3>
+                    <h3 className="font-semibold mb-2">{ES_TRANSLATIONS.ui.oracleText}</h3>
                     <p className="text-sm bg-gray-50 p-3 rounded">
-                      {selectedCard.definition.oracleText}
+                      {(selectedCard.definition as any).oracleText}
                     </p>
                   </div>
                 )}
                 
                 {selectedCard.definition.flavorText && (
                   <div>
-                    <h3 className="font-semibold mb-2">Flavor Text</h3>
+                    <h3 className="font-semibold mb-2">{ES_TRANSLATIONS.ui.flavorText}</h3>
                     <p className="text-sm italic text-gray-600">
                       "{selectedCard.definition.flavorText}"
                     </p>

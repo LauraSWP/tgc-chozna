@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getUser } from '@/lib/auth';
-import { createClient } from '@/lib/auth';
+import { getUser, createClient } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +26,7 @@ export async function GET(req: NextRequest) {
       console.error('Error checking total card definitions:', totalDefsError);
     }
     
-                  // Get user's complete collection with card details
+                  // Get user's complete collection with card details and proper rarity/set joins
       const { data: userCards, error } = await supabase
         .from('user_cards')
         .select(`
@@ -49,7 +48,18 @@ export async function GET(req: NextRequest) {
              artist,
              external_code,
              keywords,
-             rules_json
+             rules_json,
+             rarities(
+               id,
+               code,
+               display_name,
+               color
+             ),
+             card_sets(
+               id,
+               code,
+               name
+             )
            )
         `)
         .eq('owner', user.id)
@@ -64,13 +74,13 @@ export async function GET(req: NextRequest) {
     
     // Debug: Check for orphaned cards
     if (userCards && userCards.length > 0) {
-      const orphanedCards = userCards.filter(card => !card.card_definitions);
+      const orphanedCards = userCards.filter((card: any) => !card.card_definitions);
       console.log('Orphaned cards (no card definition):', orphanedCards.length);
       if (orphanedCards.length > 0) {
         console.log('Sample orphaned card:', orphanedCards[0]);
       }
       
-      const validCards = userCards.filter(card => card.card_definitions);
+      const validCards = userCards.filter((card: any) => card.card_definitions);
       console.log('Valid cards (with card definition):', validCards.length);
     }
 
@@ -95,13 +105,13 @@ export async function GET(req: NextRequest) {
           // Group cards by definition and count them
      const cardGroups = new Map();
      
-          userCards?.forEach(userCard => {
+          userCards?.forEach((userCard: any) => {
        const key = userCard.card_def_id;
        console.log('Processing user card:', userCard.id, 'card_def_id:', userCard.card_def_id, 'card_definitions:', userCard.card_definitions);
        
                if (!cardGroups.has(key)) {
           // Get the card definition (it's now a single object due to !inner join)
-          const cardDef = userCard.card_definitions as any;
+          const cardDef = userCard.card_definitions;
           if (!cardDef) {
             console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
             // Skip orphaned cards for now, but we should clean them up later
@@ -111,12 +121,16 @@ export async function GET(req: NextRequest) {
                    console.log('Processing card definition:', cardDef.name);
          
                             // Transform database fields to match CardDefinition type
+         // Get rarity and set data from the properly joined data
+         const rarityData = cardDef.rarities || { code: 'common', display_name: 'Common' };
+         const setData = cardDef.card_sets || { code: 'BASE', name: 'Base Set' };
+         
          const transformedDefinition = {
            id: cardDef.id,
-           setCode: 'BASE', // We'll get this from a separate query if needed
+           setCode: setData.code,
            externalCode: cardDef.external_code || null,
            name: cardDef.name,
-           rarity: 'common', // We'll get this from a separate query if needed
+           rarity: rarityData.code, // Use actual rarity from database
            typeLine: cardDef.type_line,
            manaCost: cardDef.mana_cost,
            power: cardDef.power,
@@ -127,8 +141,8 @@ export async function GET(req: NextRequest) {
            artist: cardDef.artist,
            imageUrl: cardDef.image_url,
            // Keep original database fields for compatibility
-           rarities: { code: 'common', display_name: 'Common' },
-           card_sets: { code: 'BASE', name: 'Base Set' },
+           rarities: rarityData,
+           card_sets: setData,
            oracleText: null // oracle_text field doesn't exist in database
          };
          
@@ -151,47 +165,7 @@ export async function GET(req: NextRequest) {
            const collection = Array.from(cardGroups.values());
       console.log('Grouped into collection:', collection.length, 'unique cards');
 
-      // Get rarity and card set data for the cards we found
-      if (collection.length > 0) {
-        const cardDefIds = collection.map(card => card.definition.id);
-        console.log('Fetching rarity and card set data for card definitions:', cardDefIds);
-        
-        const { data: cardDetails, error: detailsError } = await supabase
-          .from('card_definitions')
-          .select(`
-            id,
-            rarity_id,
-            set_id,
-            rarities(
-              id,
-              code,
-              display_name,
-              color
-            ),
-            card_sets(
-              id,
-              code,
-              name
-            )
-          `)
-          .in('id', cardDefIds);
-
-        if (detailsError) {
-          console.warn('Error fetching card details:', detailsError);
-        } else {
-          console.log('Found card details:', cardDetails?.length || 0);
-          // Update the collection with the correct rarity and card set data
-          cardDetails?.forEach(detail => {
-            const card = collection.find(c => c.definition.id === detail.id);
-            if (card) {
-              card.definition.rarities = detail.rarities?.[0] || { code: 'common', display_name: 'Common' };
-              card.definition.card_sets = detail.card_sets?.[0] || { code: 'BASE', name: 'Base Set' };
-              card.definition.rarity = detail.rarities?.[0]?.code || 'common';
-              card.definition.setCode = detail.card_sets?.[0]?.code || 'BASE';
-            }
-          });
-        }
-      }
+      // Note: Rarity and card set data is now fetched in the main query above, no need for separate query
 
      // Get collection summary statistics (optional - don't fail if view doesn't exist)
     let summary = [];
