@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    console.log('Fetching collection for user:', user.id);
     const supabase = await createClient();
     
          // Get user's complete collection with card details
@@ -21,22 +22,18 @@ export async function GET(req: NextRequest) {
          card_def_id,
          foil,
          acquired_at,
-                   card_definitions(
+         card_definitions(
             id,
             name,
             mana_cost,
-            cmc,
             type_line,
-            oracle_text,
             flavor_text,
             power,
             toughness,
-            loyalty,
             image_url,
             rarity_id,
             set_id,
             artist,
-            created_at,
             external_code,
             keywords,
             rules_json,
@@ -56,7 +53,12 @@ export async function GET(req: NextRequest) {
        .eq('owner', user.id)
        .order('acquired_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching user cards:', error);
+      throw error;
+    }
+
+    console.log('Found user cards:', userCards?.length || 0);
 
          // Group cards by definition and count them
      const cardGroups = new Map();
@@ -64,17 +66,22 @@ export async function GET(req: NextRequest) {
      userCards?.forEach(userCard => {
        const key = userCard.card_def_id;
        if (!cardGroups.has(key)) {
-         // Get the card definition (it's an array, so we take the first element)
-         const cardDef = userCard.card_definitions?.[0];
-         if (!cardDef) return; // Skip if no card definition found
+         // Get the card definition (it's an object, not an array)
+         const cardDef = userCard.card_definitions;
+         if (!cardDef) {
+           console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
+           return; // Skip if no card definition found
+         }
+         
+         console.log('Processing card definition:', cardDef.name, 'with rarities:', cardDef.rarities);
          
          // Transform database fields to match CardDefinition type
          const transformedDefinition = {
            id: cardDef.id,
-           setCode: cardDef.card_sets?.[0]?.code || 'BASE',
+           setCode: cardDef.card_sets?.code || 'BASE',
            externalCode: cardDef.external_code || null,
            name: cardDef.name,
-           rarity: cardDef.rarities?.[0]?.code || 'common',
+           rarity: cardDef.rarities?.code || 'common',
            typeLine: cardDef.type_line,
            manaCost: cardDef.mana_cost,
            power: cardDef.power,
@@ -85,9 +92,9 @@ export async function GET(req: NextRequest) {
            artist: cardDef.artist,
            imageUrl: cardDef.image_url,
            // Keep original database fields for compatibility
-           rarities: cardDef.rarities?.[0],
-           card_sets: cardDef.card_sets?.[0],
-           oracleText: cardDef.oracle_text
+           rarities: cardDef.rarities || { code: 'common', display_name: 'Common' },
+           card_sets: cardDef.card_sets || { code: 'BASE', name: 'Base Set' },
+           oracleText: null // oracle_text field doesn't exist in database
          };
          
          cardGroups.set(key, {
@@ -107,18 +114,30 @@ export async function GET(req: NextRequest) {
      });
 
      const collection = Array.from(cardGroups.values());
+     console.log('Grouped into collection:', collection.length, 'unique cards');
 
-    // Get collection summary statistics
-    const { data: summary, error: summaryError } = await supabase
-      .from('user_collection_summary')
-      .select('*')
-      .eq('owner', user.id);
+    // Get collection summary statistics (optional - don't fail if view doesn't exist)
+    let summary = [];
+    try {
+      const { data: summaryData, error: summaryError } = await supabase
+        .from('user_collection_summary')
+        .select('*')
+        .eq('owner', user.id);
 
-    if (summaryError) throw summaryError;
+      if (summaryError) {
+        console.warn('Error fetching summary (continuing without it):', summaryError);
+      } else {
+        summary = summaryData || [];
+      }
+    } catch (summaryError) {
+      console.warn('Summary view not available (continuing without it):', summaryError);
+    }
 
+    console.log('Returning collection with', collection.length, 'unique cards and', userCards?.length || 0, 'total cards');
+    
     return NextResponse.json({
       collection,
-      summary: summary || [],
+      summary,
       totalCards: userCards?.length || 0
     });
 
