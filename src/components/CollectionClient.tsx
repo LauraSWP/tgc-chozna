@@ -81,7 +81,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
 
   // Filter and sort collection
   const filteredCollection = useMemo(() => {
-    let filtered = collection.filter(group => {
+    const filtered = collection.filter(group => {
       const card = group.definition;
       
       // Search filtering - use correct property names from CardDefinition type
