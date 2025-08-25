@@ -14,88 +14,97 @@ export async function GET(req: NextRequest) {
     console.log('Fetching collection for user:', user.id);
     const supabase = await createClient();
     
-         // Get user's complete collection with card details
-     const { data: userCards, error } = await supabase
-       .from('user_cards')
-       .select(`
-         id,
-         card_def_id,
-         foil,
-         acquired_at,
-         card_definitions(
-            id,
-            name,
-            mana_cost,
-            type_line,
-            flavor_text,
-            power,
-            toughness,
-            image_url,
-            rarity_id,
-            set_id,
-            artist,
-            external_code,
-            keywords,
-            rules_json,
-            rarities(
-              id,
-              code,
-              display_name,
-              color
-            ),
-            card_sets(
-              id,
-              code,
-              name
-            )
-          )
-       `)
-       .eq('owner', user.id)
-       .order('acquired_at', { ascending: false });
+                  // Get user's complete collection with card details
+      const { data: userCards, error } = await supabase
+        .from('user_cards')
+        .select(`
+          id,
+          card_def_id,
+          foil,
+          acquired_at,
+          card_definitions!inner(
+             id,
+             name,
+             mana_cost,
+             type_line,
+             flavor_text,
+             power,
+             toughness,
+             image_url,
+             rarity_id,
+             set_id,
+             artist,
+             external_code,
+             keywords,
+             rules_json
+           )
+        `)
+        .eq('owner', user.id)
+        .order('acquired_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching user cards:', error);
       throw error;
     }
 
-    console.log('Found user cards:', userCards?.length || 0);
+         console.log('Found user cards:', userCards?.length || 0);
 
-         // Group cards by definition and count them
+     // Test: Get a sample of card definitions to see if they exist
+     if (userCards && userCards.length > 0) {
+       const sampleCardDefId = userCards[0].card_def_id;
+       console.log('Testing card definition lookup for ID:', sampleCardDefId);
+       
+       const { data: testCardDef, error: testError } = await supabase
+         .from('card_definitions')
+         .select('id, name')
+         .eq('id', sampleCardDefId)
+         .single();
+       
+       if (testError) {
+         console.error('Error testing card definition lookup:', testError);
+       } else {
+         console.log('Test card definition found:', testCardDef);
+       }
+     }
+
+          // Group cards by definition and count them
      const cardGroups = new Map();
      
-     userCards?.forEach(userCard => {
+          userCards?.forEach(userCard => {
        const key = userCard.card_def_id;
-               if (!cardGroups.has(key)) {
-          // Get the card definition (it's an array, so we take the first element)
-          const cardDef = userCard.card_definitions?.[0];
-          if (!cardDef) {
-            console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
-            return; // Skip if no card definition found
-          }
-          
-          console.log('Processing card definition:', cardDef.name, 'with rarities:', cardDef.rarities);
+       console.log('Processing user card:', userCard.id, 'card_def_id:', userCard.card_def_id, 'card_definitions:', userCard.card_definitions);
+       
+       if (!cardGroups.has(key)) {
+         // Get the card definition (it's an array, so we take the first element)
+         const cardDef = userCard.card_definitions?.[0];
+         if (!cardDef) {
+           console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
+           return; // Skip if no card definition found
+         }
          
-                   // Transform database fields to match CardDefinition type
-          const transformedDefinition = {
-            id: cardDef.id,
-            setCode: cardDef.card_sets?.[0]?.code || 'BASE',
-            externalCode: cardDef.external_code || null,
-            name: cardDef.name,
-            rarity: cardDef.rarities?.[0]?.code || 'common',
-            typeLine: cardDef.type_line,
-            manaCost: cardDef.mana_cost,
-            power: cardDef.power,
-            toughness: cardDef.toughness,
-            keywords: cardDef.keywords || [],
-            rules: cardDef.rules_json || {},
-            flavorText: cardDef.flavor_text,
-            artist: cardDef.artist,
-            imageUrl: cardDef.image_url,
-            // Keep original database fields for compatibility
-            rarities: cardDef.rarities?.[0] || { code: 'common', display_name: 'Common' },
-            card_sets: cardDef.card_sets?.[0] || { code: 'BASE', name: 'Base Set' },
-            oracleText: null // oracle_text field doesn't exist in database
-          };
+         console.log('Processing card definition:', cardDef.name, 'with rarities:', cardDef.rarities);
+         
+                            // Transform database fields to match CardDefinition type
+         const transformedDefinition = {
+           id: cardDef.id,
+           setCode: 'BASE', // We'll get this from a separate query if needed
+           externalCode: cardDef.external_code || null,
+           name: cardDef.name,
+           rarity: 'common', // We'll get this from a separate query if needed
+           typeLine: cardDef.type_line,
+           manaCost: cardDef.mana_cost,
+           power: cardDef.power,
+           toughness: cardDef.toughness,
+           keywords: cardDef.keywords || [],
+           rules: cardDef.rules_json || {},
+           flavorText: cardDef.flavor_text,
+           artist: cardDef.artist,
+           imageUrl: cardDef.image_url,
+           // Keep original database fields for compatibility
+           rarities: { code: 'common', display_name: 'Common' },
+           card_sets: { code: 'BASE', name: 'Base Set' },
+           oracleText: null // oracle_text field doesn't exist in database
+         };
          
          cardGroups.set(key, {
            definition: transformedDefinition,
@@ -113,10 +122,52 @@ export async function GET(req: NextRequest) {
        }
      });
 
-     const collection = Array.from(cardGroups.values());
-     console.log('Grouped into collection:', collection.length, 'unique cards');
+           const collection = Array.from(cardGroups.values());
+      console.log('Grouped into collection:', collection.length, 'unique cards');
 
-    // Get collection summary statistics (optional - don't fail if view doesn't exist)
+      // Get rarity and card set data for the cards we found
+      if (collection.length > 0) {
+        const cardDefIds = collection.map(card => card.definition.id);
+        console.log('Fetching rarity and card set data for card definitions:', cardDefIds);
+        
+        const { data: cardDetails, error: detailsError } = await supabase
+          .from('card_definitions')
+          .select(`
+            id,
+            rarity_id,
+            set_id,
+            rarities(
+              id,
+              code,
+              display_name,
+              color
+            ),
+            card_sets(
+              id,
+              code,
+              name
+            )
+          `)
+          .in('id', cardDefIds);
+
+        if (detailsError) {
+          console.warn('Error fetching card details:', detailsError);
+        } else {
+          console.log('Found card details:', cardDetails?.length || 0);
+          // Update the collection with the correct rarity and card set data
+          cardDetails?.forEach(detail => {
+            const card = collection.find(c => c.definition.id === detail.id);
+            if (card) {
+              card.definition.rarities = detail.rarities?.[0] || { code: 'common', display_name: 'Common' };
+              card.definition.card_sets = detail.card_sets?.[0] || { code: 'BASE', name: 'Base Set' };
+              card.definition.rarity = detail.rarities?.[0]?.code || 'common';
+              card.definition.setCode = detail.card_sets?.[0]?.code || 'BASE';
+            }
+          });
+        }
+      }
+
+     // Get collection summary statistics (optional - don't fail if view doesn't exist)
     let summary = [];
     try {
       const { data: summaryData, error: summaryError } = await supabase
