@@ -60,8 +60,7 @@ BEGIN
     (base_set_id, 'BAS027', 'Entorno de Testing', land_rarity_id, 'Tierra', null, null, null, ARRAY[]::text[], '{"activated": [{"cost": "{T}", "effects": [{"op": "add_mana", "color": "any", "amount": 1}], "description": "Girar: Añade un maná de cualquier color."}]}', 'Aquí todo vale.', 'QA Lab', true),
     (base_set_id, 'BAS028', 'Repositorio Git', land_rarity_id, 'Tierra', null, null, null, ARRAY[]::text[], '{"activated": [{"cost": "{T}", "effects": [{"op": "add_mana", "color": "any", "amount": 1}], "description": "Girar: Añade un maná de cualquier color."}]}', 'El lugar donde vive el código.', 'Version Control', true),
     (base_set_id, 'BAS029', 'Base de Datos', land_rarity_id, 'Tierra', null, null, null, ARRAY[]::text[], '{"activated": [{"cost": "{T}", "effects": [{"op": "add_mana", "color": "any", "amount": 1}], "description": "Girar: Añade un maná de cualquier color."}]}', 'Donde se guardan todos los secretos.', 'Data Warehouse', true),
-    (base_set_id, 'BAS030', 'Cloud Platform', land_rarity_id, 'Tierra', null, null, null, ARRAY[]::text[], '{"activated": [{"cost": "{T}", "effects": [{"op": "add_mana", "color": "any", "amount": 1}], "description": "Girar: Añade un maná de cualquier color."}]}', 'El futuro está en la nube.', 'Cloud Provider', true)
-  ON CONFLICT (external_code) DO NOTHING;
+    (base_set_id, 'BAS030', 'Cloud Platform', land_rarity_id, 'Tierra', null, null, null, ARRAY[]::text[], '{"activated": [{"cost": "{T}", "effects": [{"op": "add_mana", "color": "any", "amount": 1}], "description": "Girar: Añade un maná de cualquier color."}]}', 'El futuro está en la nube.', 'Cloud Provider', true);
   
   RAISE NOTICE 'Inserted card definitions for base set';
 END $$;
