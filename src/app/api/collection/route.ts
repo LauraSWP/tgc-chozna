@@ -99,15 +99,15 @@ export async function GET(req: NextRequest) {
        const key = userCard.card_def_id;
        console.log('Processing user card:', userCard.id, 'card_def_id:', userCard.card_def_id, 'card_definitions:', userCard.card_definitions);
        
-       if (!cardGroups.has(key)) {
-         // Get the card definition (it's now a single object due to !inner join)
-         const cardDef = userCard.card_definitions;
-         if (!cardDef) {
-           console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
-           // Skip orphaned cards for now, but we should clean them up later
-           return; // Skip if no card definition found
-         }
-         
+               if (!cardGroups.has(key)) {
+          // Get the card definition (it's now a single object due to !inner join)
+          const cardDef = userCard.card_definitions as any;
+          if (!cardDef) {
+            console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
+            // Skip orphaned cards for now, but we should clean them up later
+            return; // Skip if no card definition found
+          }
+          
                    console.log('Processing card definition:', cardDef.name);
          
                             // Transform database fields to match CardDefinition type
