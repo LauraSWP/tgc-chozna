@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
           card_def_id,
           foil,
           acquired_at,
-          card_definitions(
+          card_definitions!inner(
              id,
              name,
              mana_cost,
@@ -64,13 +64,13 @@ export async function GET(req: NextRequest) {
     
     // Debug: Check for orphaned cards
     if (userCards && userCards.length > 0) {
-      const orphanedCards = userCards.filter(card => !card.card_definitions || card.card_definitions.length === 0);
+      const orphanedCards = userCards.filter(card => !card.card_definitions);
       console.log('Orphaned cards (no card definition):', orphanedCards.length);
       if (orphanedCards.length > 0) {
         console.log('Sample orphaned card:', orphanedCards[0]);
       }
       
-      const validCards = userCards.filter(card => card.card_definitions && card.card_definitions.length > 0);
+      const validCards = userCards.filter(card => card.card_definitions);
       console.log('Valid cards (with card definition):', validCards.length);
     }
 
@@ -100,8 +100,8 @@ export async function GET(req: NextRequest) {
        console.log('Processing user card:', userCard.id, 'card_def_id:', userCard.card_def_id, 'card_definitions:', userCard.card_definitions);
        
        if (!cardGroups.has(key)) {
-         // Get the card definition (it's an array, so we take the first element)
-         const cardDef = userCard.card_definitions?.[0];
+         // Get the card definition (it's now a single object due to !inner join)
+         const cardDef = userCard.card_definitions;
          if (!cardDef) {
            console.warn('No card definition found for user card:', userCard.id, 'card_def_id:', userCard.card_def_id);
            // Skip orphaned cards for now, but we should clean them up later
@@ -184,10 +184,10 @@ export async function GET(req: NextRequest) {
           cardDetails?.forEach(detail => {
             const card = collection.find(c => c.definition.id === detail.id);
             if (card) {
-              card.definition.rarities = detail.rarities?.[0] || { code: 'common', display_name: 'Common' };
-              card.definition.card_sets = detail.card_sets?.[0] || { code: 'BASE', name: 'Base Set' };
-              card.definition.rarity = detail.rarities?.[0]?.code || 'common';
-              card.definition.setCode = detail.card_sets?.[0]?.code || 'BASE';
+              card.definition.rarities = detail.rarities || { code: 'common', display_name: 'Common' };
+              card.definition.card_sets = detail.card_sets || { code: 'BASE', name: 'Base Set' };
+              card.definition.rarity = detail.rarities?.code || 'common';
+              card.definition.setCode = detail.card_sets?.code || 'BASE';
             }
           });
         }

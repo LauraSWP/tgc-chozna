@@ -197,21 +197,24 @@ const CardEditor: React.FC<CardEditorProps> = ({ cardId, onSave, onCancel }) => 
         toughness: form.toughness || null,
       };
 
-      // Save to database
-      if (cardId) {
-        const { error } = await supabase
-          .from('card_definitions')
-          .update(cardData)
-          .eq('id', cardId);
-        
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from('card_definitions')
-          .insert(cardData);
-        
-        if (error) throw error;
+      // Save to database using the admin API
+      const method = cardId ? 'PUT' : 'POST';
+      const url = '/api/admin/cards';
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cardId ? { id: cardId, ...cardData } : cardData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save card');
       }
+      
+      const result = await response.json();
 
       // Call onSave callback if provided, otherwise navigate to cards page
       if (onSave) {
