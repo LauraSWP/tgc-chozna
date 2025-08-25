@@ -613,10 +613,10 @@ const PackOpeningAnimation: React.FC<PackOpeningAnimationProps> = ({
               >
                 <div className="bg-black/70 text-white px-6 py-3 rounded-lg backdrop-blur-sm">
                   <h3 className="text-xl font-bold">{openResults[0].cards[enlargedCard].definition.name}</h3>
-                  <p className="text-sm text-gray-300 capitalize">
-                    {openResults[0].cards[enlargedCard].definition.rarity?.name} • 
-                    {openResults[0].cards[enlargedCard].foil && " ✨ FOIL ✨"}
-                  </p>
+                                     <p className="text-sm text-gray-300 capitalize">
+                     {openResults[0].cards[enlargedCard].definition.rarity} • 
+                     {openResults[0].cards[enlargedCard].foil && " ✨ FOIL ✨"}
+                   </p>
                 </div>
               </motion.div>
             </motion.div>
