@@ -184,10 +184,10 @@ export async function GET(req: NextRequest) {
           cardDetails?.forEach(detail => {
             const card = collection.find(c => c.definition.id === detail.id);
             if (card) {
-              card.definition.rarities = detail.rarities || { code: 'common', display_name: 'Common' };
-              card.definition.card_sets = detail.card_sets || { code: 'BASE', name: 'Base Set' };
-              card.definition.rarity = detail.rarities?.code || 'common';
-              card.definition.setCode = detail.card_sets?.code || 'BASE';
+              card.definition.rarities = detail.rarities?.[0] || { code: 'common', display_name: 'Common' };
+              card.definition.card_sets = detail.card_sets?.[0] || { code: 'BASE', name: 'Base Set' };
+              card.definition.rarity = detail.rarities?.[0]?.code || 'common';
+              card.definition.setCode = detail.card_sets?.[0]?.code || 'BASE';
             }
           });
         }
