@@ -60,12 +60,19 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
     const fetchCollection = async () => {
       setIsLoading(true);
       try {
+        console.log('Fetching collection from API...');
         const response = await fetch('/api/collection');
+        console.log('API response status:', response.status);
+        
         if (response.ok) {
           const data = await response.json();
+          console.log('API response data:', data);
           setCollection(data.collection || []);
           setSummary(data.summary || []);
           setTotalCards(data.totalCards || 0);
+        } else {
+          const errorText = await response.text();
+          console.error('API error:', response.status, errorText);
         }
       } catch (error) {
         console.error('Error fetching collection:', error);
