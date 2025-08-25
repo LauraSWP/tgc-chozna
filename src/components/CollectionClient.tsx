@@ -75,6 +75,8 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
         if (response.ok) {
           const data = await response.json();
           console.log('API response data:', data);
+          console.log('Setting collection with length:', data.collection?.length || 0);
+          console.log('Setting totalCards:', data.totalCards || 0);
           setCollection(data.collection || []);
           setSummary(data.summary || []);
           setTotalCards(data.totalCards || 0);
@@ -95,6 +97,8 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
 
   // Filter and sort collection
   const filteredCollection = useMemo(() => {
+    console.log('Filtering collection with length:', collection.length);
+    
     const filtered = collection.filter(group => {
       const card = group.definition;
       
@@ -114,6 +118,8 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
       
       return matchesSearch && matchesRarity && matchesType && matchesFoil;
     });
+
+    console.log('After filtering, collection length:', filtered.length);
 
     // Sort collection
     filtered.sort((a, b) => {
@@ -136,11 +142,14 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
       }
     });
 
+    console.log('Final filtered collection length:', filtered.length);
     return filtered;
   }, [collection, searchTerm, selectedRarity, selectedType, sortBy, showFoilsOnly]);
 
   // Calculate summary stats
   const summaryStats = useMemo(() => {
+    console.log('Calculating summary stats with collection length:', collection.length, 'totalCards:', totalCards);
+    
     const stats = {
       totalUnique: collection.length,
       totalCards,
@@ -157,6 +166,7 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
       stats.byRarity[rarity].foils += group.foilCount;
     });
 
+    console.log('Summary stats calculated:', stats);
     return stats;
   }, [collection, totalCards]);
 
