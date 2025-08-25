@@ -6,8 +6,11 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
+    console.log('Collection API called');
+    
     const user = await getUser();
     if (!user) {
+      console.log('No user found, returning 401');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -186,11 +189,21 @@ export async function GET(req: NextRequest) {
 
     console.log('Returning collection with', collection.length, 'unique cards and', userCards?.length || 0, 'total cards');
     
-    return NextResponse.json({
+    // For debugging, let's also return some test data
+    const testResponse = {
       collection,
       summary,
-      totalCards: userCards?.length || 0
-    });
+      totalCards: userCards?.length || 0,
+      debug: {
+        userCardsFound: userCards?.length || 0,
+        collectionLength: collection.length,
+        user: user.id
+      }
+    };
+    
+    console.log('Final response:', testResponse);
+    
+    return NextResponse.json(testResponse);
 
   } catch (error) {
     console.error('Error fetching collection:', error);

@@ -44,6 +44,11 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
   summary: initialSummary,
   totalCards: initialTotalCards
 }) => {
+  console.log('CollectionClient component rendered with props:', { 
+    initialCollectionLength: initialCollection.length, 
+    initialSummaryLength: initialSummary.length, 
+    initialTotalCards 
+  });
   const [collection, setCollection] = useState<CardGroup[]>(initialCollection);
   const [summary, setSummary] = useState<CollectionSummary[]>(initialSummary);
   const [totalCards, setTotalCards] = useState(initialTotalCards);
@@ -57,7 +62,10 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
 
   // Fetch collection data on mount
   useEffect(() => {
+    console.log('CollectionClient useEffect triggered, initialCollection length:', initialCollection.length);
+    
     const fetchCollection = async () => {
+      console.log('Starting fetchCollection...');
       setIsLoading(true);
       try {
         console.log('Fetching collection from API...');
@@ -81,10 +89,9 @@ const CollectionClient: React.FC<CollectionClientProps> = ({
       }
     };
 
-    if (initialCollection.length === 0) {
-      fetchCollection();
-    }
-  }, [initialCollection]);
+    // Always fetch collection data
+    fetchCollection();
+  }, []); // Remove dependency on initialCollection
 
   // Filter and sort collection
   const filteredCollection = useMemo(() => {
